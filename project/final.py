@@ -88,16 +88,16 @@ def drawBoard(board):
     print(f'\n{draw}')
 
 def endGame(board, player):
-    c1 = board[1] + board[4] + board[7]
-    c2 = board[2] + board[5] + board[8]
-    c3 = board[3] + board[6] + board[9]
-    c4 = board[7] + board[8] + board[9]
-    c5 = board[4] + board[5] + board[6]
-    c6 = board[1] + board[2] + board[3]
-    c7 = board[7] + board[5] + board[3]
-    c8 = board[1] + board[5] + board[9]
-    cList = [c1, c2, c3, c4, c5, c6, c7, c8]
-    for i in cList:
+    winCon1 = board[1] + board[4] + board[7]
+    winCon2 = board[2] + board[5] + board[8]
+    winCon3 = board[3] + board[6] + board[9]
+    winCon4 = board[7] + board[8] + board[9]
+    winCon5 = board[4] + board[5] + board[6]
+    winCon6 = board[1] + board[2] + board[3]
+    winCon7 = board[7] + board[5] + board[3]
+    winCon8 = board[1] + board[5] + board[9]
+    winConList = [winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8]
+    for i in winConList:
         if i == -3:
             return(-2)
         elif i == 3:
@@ -132,32 +132,110 @@ def compTurn(board):
     return(endGame(board, 1))
 
 def decision(board):
-    c1 = board[1] + board[4] + board[7]
-    c2 = board[2] + board[5] + board[8]
-    c3 = board[3] + board[6] + board[9]
-    c4 = board[7] + board[8] + board[9]
-    c5 = board[4] + board[5] + board[6]
-    c6 = board[1] + board[2] + board[3]
-    c7 = board[7] + board[5] + board[3]
-    c8 = board[1] + board[5] + board[9]
-    l1 = [1, 4, 7]
-    l2 = [2, 5, 8]
-    l3 = [3, 6, 9]
-    l4 = [7, 8, 9]
-    l5 = [4, 5, 6]
-    l6 = [1, 2, 3]
-    l7 = [7, 5, 3]
-    l8 = [1, 5, 9]
-    cList = [c1, c2, c3, c4, c5, c6, c7, c8]
-    lList = [l1, l2, l3, l4, l5, l6, l7, l8]
+    winCon1 = board[1] + board[4] + board[7]
+    winCon2 = board[2] + board[5] + board[8]
+    winCon3 = board[3] + board[6] + board[9]
+    winCon4 = board[7] + board[8] + board[9]
+    winCon5 = board[4] + board[5] + board[6]
+    winCon6 = board[1] + board[2] + board[3]
+    winCon7 = board[7] + board[5] + board[3]
+    winCon8 = board[1] + board[5] + board[9]
+    winSquares1 = [1, 4, 7]
+    winSquares2 = [2, 5, 8]
+    winSquares3 = [3, 6, 9]
+    winSquares4 = [7, 8, 9]
+    winSquares5 = [4, 5, 6]
+    winSquares6 = [1, 2, 3]
+    winSquares7 = [7, 5, 3]
+    winSquares8 = [1, 5, 9]
+    winConList = [winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8]
+    winSquaresList = [winSquares1, winSquares2, winSquares3, winSquares4, winSquares5, winSquares6, winSquares7, winSquares8]
     choice = 0
+    occupiedSquares = 0
+    # 1) EVAL FIRST TURN, SECOND TURN
+    for i in range(1, 10, 1):
+        if board[i] != 0:
+            occupiedSquares += 1
+    if occupiedSquares == 0:
+        choiceDict = {5:1}
+        board.update(choiceDict)
+        return(board)
+    elif occupiedSquares == 1:
+        if board[5] == 0:
+            choiceDict = {5:1}
+            board.update(choiceDict)
+            return(board)
+        elif board[5] == -1:
+            choiceDict = {3:1}
+            board.update(choiceDict)
+            return(board)
+
+    # 2) EVAL IF CAN WIN THIS TURN
     for i in range(0, 8, 1):
-        if cList[i] == 2:
-            for j in lList[i]:
+        if winConList[i] == 2:
+            for j in winSquaresList[i]:
+                if board[j] == 0:
+                    choiceDict = {j:1}
+                    board.update(choiceDict)
+                    return(board)
+
+    # 3) EVAL IF NEED TO PREVENT LOSS THIS TURN
+    for i in range(0, 8, 1):
+        if winConList[i] == -2:
+            for j in winSquaresList[i]:
                 if board[j] == 0:
                     choiceDict = {j: 1}
                     board.update(choiceDict)
                     return(board)
-    return(board)
+
+    # 4) EVAL IF NEED TO PREVENT LOSS NEXT TURN
+    prevent1 = [[1, 5, 9], [3, 5, 7], [9, 5, 1], [7, 5, 3]]
+    for layout in prevent1:
+        if board[layout[0]] == 1 and board[layout[1]] == -1 and board[layout[2]] == -1:
+            if board[1] == 0:
+                choiceDict = {1:1}
+                board.update(choiceDict)
+                return(board)
+            elif board[1] != 0:
+                choiceDict = {3:1}
+                board.update(choiceDict)
+                return(board)
+        elif board[layout[0]] == -1 and board[layout[1]] == 1 and board[layout[2]] == -1:
+                choiceDict = {2:1}
+                board.update(choiceDict)
+                return(board)
+
+    # 5) PREVENT guaranteed loss in next turn turns
+    prevent2 = [[7, 5, 6], [1, 5, 6], [1, 5, 8], [3, 5, 8], [4, 5, 9], [4, 5, 3], [2, 5, 7], [2, 5, 9]]
+    if (board[prevent2[0][0]] == -1 and board[prevent2[0][1]] == 1 and board[prevent2[0][2]] == -1) or \
+       (board[prevent2[3][0]] == -1 and board[prevent2[3][1]] == 1 and board[prevent2[3][2]] == -1):
+       choiceDict = {1:1}
+       board.update(choiceDict)
+       return(board)
+    elif (board[prevent2[2][0]] == -1 and board[prevent2[2][1]] == 1 and board[prevent2[2][2]] == -1) or \
+         (board[prevent2[4][0]] == -1 and board[prevent2[4][1]] == 1 and board[prevent2[4][2]] == -1):
+         choiceDict = {3:1}
+         board.update(choiceDict)
+         return(board)
+    elif (board[prevent2[1][0]] == -1 and board[prevent2[1][1]] == 1 and board[prevent2[1][2]] == -1) or \
+         (board[prevent2[7][0]] == -1 and board[prevent2[7][1]] == 1 and board[prevent2[7][2]] == -1):
+         choiceDict = {7:1}
+         board.update(choiceDict)
+         return(board)
+    elif (board[prevent2[5][0]] == -1 and board[prevent2[5][1]] == 1 and board[prevent2[5][2]] == -1) or \
+         (board[prevent2[6][0]] == -1 and board[prevent2[6][1]] == 1 and board[prevent2[6][2]] == -1):
+         choiceDict = {9:1}
+         board.update(choiceDict)
+         return(board)
+
+    # 6) EVAL if computer can setup guaranteed win 2 turns later
+    
+
+    # 7) EVAL where to go if all other above conditions not met
+    for i in range(1, 10):
+        if board[i] == 0:
+            choiceDict = {i:1}
+            board.update(choiceDict)
+            return(board)
 
 main()
