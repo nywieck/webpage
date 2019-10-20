@@ -35,7 +35,8 @@ def decision():
             how to implement this decision in code
         3) check to ensure not a situation to lose in 2 turns
             how to implement this decision in code
-        4) if none of the above... then maybe go in square with greatest degrees of freedom?
+        4) if none of the above... try to setup 2 turn win
+        5) if not 5, then maybe go in square with greatest degrees of freedom?
             how to implement this decision in code
 
         *if go second, turn 1, if middle is open then go in middle, otherwise must go in a corner to prevent potential losing situation
