@@ -1,4 +1,5 @@
 import random
+import time
 
 def main():
     playGame()
@@ -23,6 +24,12 @@ def playGame():
         while nextTurn == 1 or nextTurn == 2:
             print(f'\n\n[[  T U R N  {turnCount}  ]]\n-------------------')
             if nextTurn == 1:
+                print('Hmm analyzing', end=' ', flush=True)
+                time.sleep(1)
+                print('. ', end=' ', flush=True)  
+                time.sleep(1)
+                print('. ', end=' ', flush=True)
+                time.sleep(1)
                 nextTurn = compTurn(board)
                 turnCount += 1
             elif nextTurn == 2:
