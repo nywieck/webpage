@@ -189,9 +189,22 @@ def decision(board):
 
     # 1) EVAL FIRST TURN
     if occupiedSquares == 0:
-        choiceDict = {5:1}
-        board.update(choiceDict)
-        return(board)
+        strategy = random.randrange(0, 3, 1)
+        # ORIGINAL
+        if strategy == 1:
+            choiceDict = {5:1}
+            board.update(choiceDict)
+            return(board)
+        # NEW CORNER
+        elif strategy == 2:
+            choiceDict = {7:1}
+            board.update(choiceDict)
+            return(board)
+        # NEW SIDE
+        else:
+            choiceDict = {4:1}
+            board.update(choiceDict)
+            return(board)
 
     # 2) EVAL SECOND TURN
     if occupiedSquares == 1:
@@ -262,12 +275,50 @@ def decision(board):
                 board.update(choiceDict)
                 return(board)
 
-        # C (would have to program differently, because currently if go first always mid, and if second always square #3)
-        # D (would have to program differently, because currently if go first always mid, and if second always square #3)
-        # E (would have to program differently, because currently if go first always mid, and if second always square #3)
+        # C NEW CORNER STRATEGY
+        if board[7] == 1:
+            # C1 STRATEGY
+            if board[5] == -1:
+                choiceDict = {3: 1}
+                board.update(choiceDict)
+                return(board)
+            # C2 THIS IS A SUB-CORNER STRATEGY THAT WILL USE THE SAME PATTERN AS CODED BELOW BUT STARTING SQUARE 3
+            elif board[5] == 0 and board[3] == -1:
+                choiceDict = {5: 1}
+                board.update(choiceDict)
+                return(board)
+            # C3 STRATEGY
+            elif board[1] == -1 or board[2] == -1 or board[4] == -1:
+                choiceDict = {6: 1}
+                board.update(choiceDict)
+                return(board)
+            elif board[6] == -1 or board[8] == -1 or board[9] == -1:
+                choiceDict = {2: 1}
+                board.update(choiceDict)
+                return(board)
+
+        if board[4] == 1:
+            # D STRATEGY
+            if board[5] == -1:
+                choiceDict = {2: 1}
+                board.update(choiceDict)
+                return(board)
+            if board[6] == -1:
+                choiceDict = {5: 1}
+                board.update(choiceDict)
+                return(board)
+            # E STRATEGY
+            if board[3] == -1 or board[2] == -1:
+                choiceDict = {9: 1}
+                board.update(choiceDict)
+                return(board)
+            # F STRATEGY
+            if board[9] == -1 or board[8] == -1:
+                choiceDict = {2: 1}
+                board.update(choiceDict)
+                return(board)
 
     # <<<<<<<  if occupiedSquares == 2, then means must be careful about unwinnable conditions, must prevent now   >>>>>>>
-
     # 5) EVAL FOURTH TURN - PREVENT guaranteed loss in next TWO turns
     if occupiedSquares == 3:
         prevent1 = [[1, 5, 9], [3, 5, 7], [9, 5, 1], [7, 5, 3]]
@@ -289,39 +340,39 @@ def decision(board):
         prevent2 = [[7, 5, 6], [1, 5, 6], [1, 5, 8], [3, 5, 8], [4, 5, 9], [4, 5, 3], [2, 5, 7], [2, 5, 9]]
         if (board[prevent2[0][0]] == -1 and board[prevent2[0][1]] == 1 and board[prevent2[0][2]] == -1) or \
            (board[prevent2[3][0]] == -1 and board[prevent2[3][1]] == 1 and board[prevent2[3][2]] == -1):
+                choiceDict = {9:1}
+                board.update(choiceDict)
+                return(board)
+        elif (board[prevent2[5][0]] == -1 and board[prevent2[5][1]] == 1 and board[prevent2[5][2]] == -1) or \
+         (board[prevent2[6][0]] == -1 and board[prevent2[6][1]] == 1 and board[prevent2[6][2]] == -1):
                 choiceDict = {1:1}
                 board.update(choiceDict)
                 return(board)
         elif (board[prevent2[2][0]] == -1 and board[prevent2[2][1]] == 1 and board[prevent2[2][2]] == -1) or \
              (board[prevent2[4][0]] == -1 and board[prevent2[4][1]] == 1 and board[prevent2[4][2]] == -1):
-                choiceDict = {3:1}
+                choiceDict = {7:1}
                 board.update(choiceDict)
                 return(board)
         elif (board[prevent2[1][0]] == -1 and board[prevent2[1][1]] == 1 and board[prevent2[1][2]] == -1) or \
              (board[prevent2[7][0]] == -1 and board[prevent2[7][1]] == 1 and board[prevent2[7][2]] == -1):
-                choiceDict = {7:1}
-                board.update(choiceDict)
-                return(board)
-        elif (board[prevent2[5][0]] == -1 and board[prevent2[5][1]] == 1 and board[prevent2[5][2]] == -1) or \
-         (board[prevent2[6][0]] == -1 and board[prevent2[6][1]] == 1 and board[prevent2[6][2]] == -1):
-                choiceDict = {9:1}
+                choiceDict = {3:1}
                 board.update(choiceDict)
                 return(board)
 
         prevent3 = [[5, 6, 8], [5, 2, 4], [5, 4, 8], [5 ,2, 6]]
-        if (board[prevent2[0][0]] == 1 and board[prevent2[0][1]] == -1 and board[prevent2[0][2]] == -1):
+        if (board[prevent3[0][0]] == 1 and board[prevent3[0][1]] == -1 and board[prevent3[0][2]] == -1):
             choiceDict = {9:1}
             board.update(choiceDict)
             return(board)
-        elif (board[prevent2[1][0]] == 1 and board[prevent2[1][1]] == -1 and board[prevent2[1][2]] == -1):
+        elif (board[prevent3[1][0]] == 1 and board[prevent3[1][1]] == -1 and board[prevent3[1][2]] == -1):
             choiceDict = {1:1}
             board.update(choiceDict)
             return(board)
-        elif (board[prevent2[2][0]] == 1 and board[prevent2[2][1]] == -1 and board[prevent2[2][2]] == -1):
+        elif (board[prevent3[2][0]] == 1 and board[prevent3[2][1]] == -1 and board[prevent3[2][2]] == -1):
             choiceDict = {7:1}
             board.update(choiceDict)
             return(board)
-        elif (board[prevent2[3][0]] == 1 and board[prevent2[3][1]] == -1 and board[prevent2[3][2]] == -1):
+        elif (board[prevent3[3][0]] == 1 and board[prevent3[3][1]] == -1 and board[prevent3[3][2]] == -1):
             choiceDict = {3:1}
             board.update(choiceDict)
             return(board)
@@ -380,6 +431,85 @@ def decision(board):
                 board.update(choiceDict)
                 return(board)
 
+        # C NEW CORNER STRATEGY
+        if board[7] == 1:
+            # C1 STRATEGY
+            if board[5] == -1:
+                if board[1] == -1:
+                    choiceDict = {9:1}
+                    board.update(choiceDict)
+                    return(board)
+                elif board[9] == -1:
+                    choiceDict = {1:1}
+                    board.update(choiceDict)
+                    return(board)
+                # C3 STRATEGY
+                elif board[6] == 1 and board[4] == -1:
+                    choiceDict = {9:1}
+                    board.update(choiceDict)
+                    return(board)
+                elif board[2] == 1 and board[8] == -1:
+                    choiceDict = {1:1}
+                    board.update(choiceDict)
+                    return(board)
+
+            # C2 STRATEGY
+            elif board[5] == 1:
+                if board[8] == -1:
+                    choiceDict = {1:1}
+                    board.update(choiceDict)
+                    return(board)
+                elif board[4] == -1:
+                    choiceDict = {9:1}
+                    board.update(choiceDict)
+                    return(board)
+
+        # D AND E AND F STRATEGIES
+        if board[4] == 1:
+            if board[9] == 1:
+                if board[3] == -1:
+                    if board[6] == -1:
+                        choiceDict = {7:1}
+                        board.update(choiceDict)
+                        return(board)
+                    elif board[8] == -1:
+                        choiceDict = {5:1}
+                        board.update(choiceDict)
+                        return(board)
+                elif board[2] == -1:
+                    if board[6] == -1:
+                        choiceDict = {7:1}
+                        board.update(choiceDict)
+                        return(board)
+                    elif board[7] == -1:
+                        choiceDict = {5:1}
+                        board.update(choiceDict)
+                        return(board)
+            elif board[2] == 1:
+                if board[6] == -1 or board[8] == -1:
+                    choiceDict = {1:1}
+                    board.update(choiceDict)
+                    return(board)
+            elif board[3] == 1:
+                if board[9] == -1:
+                    if board[6] == -1:
+                        choiceDict = {1:1}
+                        board.update(choiceDict)
+                        return(board)
+                    elif board[2] == -1:
+                        choiceDict = {5:1}
+                        board.update(choiceDict)
+                        return(board)
+                if board[8] == -1:
+                    if board[1] == -1:
+                        choiceDict = {5:1}
+                        board.update(choiceDict)
+                        return(board)
+                    elif board[6] == -1:
+                        choiceDict = {1:1}
+                        board.update(choiceDict)
+                        return(board)
+            
     # <<<<<<< WHERE TO GO IF NONE OF THE ABOVE, NOT DETERMINED BY THE OCCUPIED SQUARES TURN COUNTER >>>>>>>
     # 7) EVAL where to go if all other above conditions not met
     for i in range(1, 10):
