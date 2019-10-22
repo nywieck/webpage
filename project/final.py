@@ -9,8 +9,31 @@ def playGame():
     gameCount = 0
     compWin = 0
     playerWin = 0
-    keepPlaying = 1
-    while keepPlaying == 1:
+    hardMode = False
+    while True:
+        choice = input('Do you want to play easy mode, or hard mode (enter 1, 2, or 3):\n1: Easy mode\n2: Hard mode\n3: Impossible mode\n')
+        try:
+            keepPlaying = int(choice)
+            if keepPlaying < 1 or keepPlaying > 3:
+                print("You have fat fingers - input must be the integer 1, 2, or 3, try again!\n")
+                continue
+            else:
+                break
+        except ValueError:
+            print("You have fat fingers - input must be the integer 1, 2, or 3, try again!\n")
+    firstTimeHard = True
+    while keepPlaying != 4:
+        if keepPlaying == 2:
+            hardMode = True
+            if firstTimeHard == True:
+                hardInit()
+                firstTimeHard = False
+            elif firstTimeHard == False:
+                print('\nHard mode selected...\n')
+        elif keepPlaying == 1:
+            print('\nEasy mode selected...\n')
+        elif keepPlaying == 3:
+            print('\nImpossible mode selected...\n')
         nextTurn = coinToss()
         board = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
         drawBoard(board)
@@ -19,16 +42,19 @@ def playGame():
             print(f'\n\n[[  T U R N  {turnCount}  ]]\n-------------------')
             if nextTurn == 1:
                 print('\nHmm analyzing', end=' ', flush=True)
-                time.sleep(1)
-                print('. ', end=' ', flush=True)  
-                time.sleep(1)
+                time.sleep(.5)
+                print('. ', end=' ', flush=True)
+                time.sleep(.5)
+                print('. ', end=' ', flush=True)
+                time.sleep(.5)
                 print('. \n', end=' ', flush=True)
-                time.sleep(1)
-                nextTurn = compTurn(board)
+                time.sleep(.5)
+                nextTurn = compTurn(board, keepPlaying)
                 turnCount += 1
             elif nextTurn == 2:
-                nextTurn = playerTurn(board)
+                nextTurn = playerTurn(board, keepPlaying)
                 turnCount += 1
+
         gameCount += 1
         if nextTurn == -1:
             compWin += 1
@@ -40,16 +66,16 @@ def playGame():
             drawMsg()
         print(f'\nTotal games played: {gameCount}\nTotal computer wins: {compWin}\nTotal player wins: {playerWin}')
         while True:
-            choice = input('\nPlay again (enter 1 or 2)?\n1: Yes, play again\n2: No, quit\n')
+            choice = input('\nPlay again (enter 1, 2, 3, or 4)?\n1: Yes, play again [EASY]\n2: Yes, play again [HARD]\n3: Yes, play again [IMPOSSIBLE]\n4: No, quit\n')
             try:
                 keepPlaying = int(choice)
-                if keepPlaying < 1 or keepPlaying > 2:
-                    print("You have fat fingers - input must be the integer 1 or 2, try again!\n")
+                if keepPlaying < 1 or keepPlaying > 4:
+                    print("You have fat fingers - input must be the integer 1, 2, 3, or 4, try again!\n")
                     continue
                 else:
                     break
             except ValueError:
-                print("You have fat fingers - input must be the integer 1 or 2, try again!\n")
+                print("You have fat fingers - input must be the integer 1, 2, or 3, try again!\n")
         
     if compWin > playerWin:
         computerWinsMatch()
@@ -63,7 +89,7 @@ def playGame():
     print('Thanks for playing!\n')
 
 def coinToss():
-    print("\nSo you know I am not cheating, flip a coin to decide who goes first, and I'll guess heads or tails!\n")
+    print("So you know I am not cheating, flip a coin to decide who goes first, and I'll guess heads or tails!\n")
     input("Press Enter to continue...")
     guess = random.randrange(0, 2, 1)
     if guess == 0:
@@ -108,7 +134,7 @@ def drawBoard(board):
         draw += '\n'
     print(f'\n{draw}')
 
-def endGame(board, player):
+def endGame(board, player, mode):
     winCon1 = board[1] + board[4] + board[7]
     winCon2 = board[2] + board[5] + board[8]
     winCon3 = board[3] + board[6] + board[9]
@@ -120,6 +146,8 @@ def endGame(board, player):
     winConList = [winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8]
     for i in winConList:
         if i == -3:
+            if mode == 3:
+                return(-1)
             return(-2)
         elif i == 3:
             return(-1)
@@ -133,9 +161,11 @@ def endGame(board, player):
         elif player == 2:
             return(1)
     else:
+        if mode == 3:
+            return(-1)
         return(0)
 
-def playerTurn(board):
+def playerTurn(board, mode):
     while True:
         square = input("Choose your next move (enter the number): \n")
         try:
@@ -153,16 +183,91 @@ def playerTurn(board):
         except ValueError:
             print("You have fat fingers - input must be an integer from 1 to 9!\n")
     drawBoard(board)
-    return(endGame(board, 2))
+    return(endGame(board, 2, mode))
 
-def compTurn(board):
-    board = decision(board)
+# RETURN FROM DECISION FUNCTION IS A DICTIONARY, FIRST KEY:VALUE PAIR RETURNS THE DICT OF UPDATED BOARD, SECOND SQUARE CHOICE DICTIONARY
+def compTurn(board, mode):
+    print(mode)
+    if mode == 1:
+        results = decisionEasy(board)
+    elif mode == 2:
+        results = decisionHard(board)
+    elif mode == 3:
+        results = decisionImp(board)
+    board = results[1]
+    move = list(results[2].keys())
     drawBoard(board)
-    return(endGame(board, 1))
+    print(f'\nComputer chose square {move[0]}\n\n')
+    if mode == 2:
+        shitTalk()
+    return(endGame(board, 1, mode))
+
+def decisionImp(board):
+    for i in range(1, 10):
+        if board[i] == 0:
+            choiceDict = {i:1}
+            board.update(choiceDict)
+            return({1:board, 2:choiceDict})
+
+def decisionEasy(board):
+    winCon1 = board[1] + board[4] + board[7]
+    winCon2 = board[2] + board[5] + board[8]
+    winCon3 = board[3] + board[6] + board[9]
+    winCon4 = board[7] + board[8] + board[9]
+    winCon5 = board[4] + board[5] + board[6]
+    winCon6 = board[1] + board[2] + board[3]
+    winCon7 = board[7] + board[5] + board[3]
+    winCon8 = board[1] + board[5] + board[9]
+    winSquares1 = [1, 4, 7]
+    winSquares2 = [2, 5, 8]
+    winSquares3 = [3, 6, 9]
+    winSquares4 = [7, 8, 9]
+    winSquares5 = [4, 5, 6]
+    winSquares6 = [1, 2, 3]
+    winSquares7 = [7, 5, 3]
+    winSquares8 = [1, 5, 9]
+    winConList = [winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8]
+    winSquaresList = [winSquares1, winSquares2, winSquares3, winSquares4, winSquares5, winSquares6, winSquares7, winSquares8]
+    occupiedSquares = 0
+    for i in range(1, 10, 1):
+        if board[i] != 0:
+            occupiedSquares += 1
+    
+    # 1) TURN 1 RANDOMLY DECIDE IF GO FIRST
+    if occupiedSquares == 0:
+        move = random.randrange(1, 10, 1)
+        choiceDict = {move:1}
+        board.update(choiceDict)
+        return({1:board, 2:choiceDict})
+
+    # 2) ALWAYS EVAL IF CAN WIN THIS TURN
+    for i in range(0, 8, 1):
+        if winConList[i] == 2:
+            for j in winSquaresList[i]:
+                if board[j] == 0:
+                    choiceDict = {j:1}
+                    board.update(choiceDict)
+                    return({1:board, 2:choiceDict})
+
+    # 3) ALWAYS EVAL IF NEED TO PREVENT LOSS THIS TURN
+    for i in range(0, 8, 1):
+        if winConList[i] == -2:
+            for j in winSquaresList[i]:
+                if board[j] == 0:
+                    choiceDict = {j: 1}
+                    board.update(choiceDict)
+                    return({1:board, 2:choiceDict})
+
+    # 4) EVAL where to go if all other above conditions not met
+    for i in range(1, 10):
+        if board[i] == 0:
+            choiceDict = {i:1}
+            board.update(choiceDict)
+            return({1:board, 2:choiceDict})
 
 # if go first, can try to setup guaranteed win
 # if go second, must prevent impossible loss
-def decision(board):
+def decisionHard(board):
     winCon1 = board[1] + board[4] + board[7]
     winCon2 = board[2] + board[5] + board[8]
     winCon3 = board[3] + board[6] + board[9]
@@ -201,7 +306,7 @@ def decision(board):
         else:
             choiceDict = {4:1}
         board.update(choiceDict)
-        return(board)
+        return({1:board, 2:choiceDict})
 
     # 2) EVAL SECOND TURN
     if occupiedSquares == 1:
@@ -212,7 +317,7 @@ def decision(board):
 
         if choiceDict != False:
             board.update(choiceDict)
-            return(board)
+            return({1:board, 2:choiceDict})
 
     # 3) ALWAYS EVAL IF CAN WIN THIS TURN
     for i in range(0, 8, 1):
@@ -221,7 +326,7 @@ def decision(board):
                 if board[j] == 0:
                     choiceDict = {j:1}
                     board.update(choiceDict)
-                    return(board)
+                    return({1:board, 2:choiceDict})
 
     # 4) ALWAYS EVAL IF NEED TO PREVENT LOSS THIS TURN
     for i in range(0, 8, 1):
@@ -230,7 +335,7 @@ def decision(board):
                 if board[j] == 0:
                     choiceDict = {j: 1}
                     board.update(choiceDict)
-                    return(board)
+                    return({1:board, 2:choiceDict})
 
     # 5) EVAL THIRD TURN
     # <<<<<<<  if occupiedSquares == 2, then means can be aggressive don't need worry about unwinnable, try to setup own >>>>>>>
@@ -253,11 +358,11 @@ def decision(board):
                 choiceDict = {7: 1}
             elif board[7] == -1:
                 choiceDict = {3: 1}
-            elif board[9] == -1:
+            else:
                 choiceDict = {1: 1}
 
             board.update(choiceDict)
-            return(board)
+            return({1:board, 2:choiceDict})
 
         # C NEW CORNER STRATEGY
         if board[7] == 1:
@@ -275,7 +380,7 @@ def decision(board):
 
             if choiceDict != False:
                 board.update(choiceDict)
-                return(board)
+                return({1:board, 2:choiceDict})
 
         if board[4] == 1:
             # D STRATEGY
@@ -292,7 +397,7 @@ def decision(board):
 
             if choiceDict != False:
                 board.update(choiceDict)
-                return(board)
+                return({1:board, 2:choiceDict})
 
     # <<<<<<<  if occupiedSquares == 2, then means must be careful about unwinnable conditions, must prevent now   >>>>>>>
     # 6) EVAL FOURTH TURN - PREVENT guaranteed loss in next TWO turns
@@ -309,7 +414,7 @@ def decision(board):
 
             if choiceDict != False:
                 board.update(choiceDict)
-                return(board)
+                return({1:board, 2:choiceDict})
 
         prevent2 = [[7, 5, 6], [1, 5, 6], [1, 5, 8], [3, 5, 8], [4, 5, 9], [4, 5, 3], [2, 5, 7], [2, 5, 9]]
         if (board[prevent2[0][0]] == -1 and board[prevent2[0][1]] == 1 and board[prevent2[0][2]] == -1) or \
@@ -327,7 +432,7 @@ def decision(board):
 
         if choiceDict != False:
             board.update(choiceDict)
-            return(board)
+            return({1:board, 2:choiceDict})
 
         prevent3 = [[5, 6, 8], [5, 2, 4], [5, 4, 8], [5 ,2, 6]]
         if (board[prevent3[0][0]] == 1 and board[prevent3[0][1]] == -1 and board[prevent3[0][2]] == -1):
@@ -341,7 +446,7 @@ def decision(board):
 
         if choiceDict != False:
             board.update(choiceDict)
-            return(board)
+            return({1:board, 2:choiceDict})
 
     # 7) FIFTH TURN - COMPLETE setting up guaranteed win if went first here
     # A
@@ -375,7 +480,7 @@ def decision(board):
 
             if choiceDict != False:
                 board.update(choiceDict)
-                return(board)
+                return({1:board, 2:choiceDict})
 
         # C NEW CORNER STRATEGY
         if board[7] == 1:
@@ -393,7 +498,7 @@ def decision(board):
 
                 if choiceDict != False:
                     board.update(choiceDict)
-                    return(board)
+                    return({1:board, 2:choiceDict})
             # C2 STRATEGY
             elif board[5] == 1:
                 if board[8] == -1:
@@ -403,7 +508,7 @@ def decision(board):
 
                 if choiceDict != False:
                     board.update(choiceDict)
-                    return(board)
+                    return({1:board, 2:choiceDict})
 
         # D AND E AND F STRATEGIES
         if board[4] == 1:
@@ -435,7 +540,7 @@ def decision(board):
 
             if choiceDict != False:
                 board.update(choiceDict)
-                return(board)
+                return({1:board, 2:choiceDict})
             
     # <<<<<<< WHERE TO GO IF NONE OF THE ABOVE, NOT DETERMINED BY THE OCCUPIED SQUARES TURN COUNTER >>>>>>>
     # 8) EVAL where to go if all other above conditions not met
@@ -443,7 +548,64 @@ def decision(board):
         if board[i] == 0:
             choiceDict = {i:1}
             board.update(choiceDict)
-            return(board)
+            return({1:board, 2:choiceDict})
+
+def hardInit():
+    print('Hard mode selected', flush=True)
+    time.sleep(1)
+    print('Virus detected', flush=True)
+    time.sleep(.3)
+    for i in range(0, 3):
+        print('. ', end=' ', flush=True)
+        time.sleep(.3)
+    virusMsg = 'Virus detected. '
+    timer = .3
+    for i in range(0, 3):
+        print(virusMsg, flush=True)
+        time.sleep(.3)
+        timer -= .1
+    for i in range(0, 2000):
+        print(virusMsg, end = '', flush=True)
+        time.sleep(.001)
+    errorMsg = 'Fatal error '
+    for i in range(0, 80):
+        print(errorMsg + str(random.randint(1, 1000000)), flush=True)
+        time.sleep(.05)
+    for i in range(0, 40000):
+        num = random.randint(0, 2)
+        if num == 0:
+            print('0', end = '', flush=True)
+        elif num == 1:
+            print('1', end = '', flush=True)
+        time.sleep(.0001)
+    blankScreen = ''
+    for i in range(0, 100):
+        blankScreen += '\n'
+    print(blankScreen, flush=True)
+    time.sleep(.3)
+    for i in range(0, 3):
+        msgWarning()
+        time.sleep(.2)
+        print(blankScreen, flush=True)
+        time.sleep(.1)
+    time.sleep(.15)
+    msgThree()
+    time.sleep(.2)
+    print(blankScreen, flush=True)
+    time.sleep(.3)
+    msgTwo()
+    time.sleep(.2)
+    print(blankScreen, flush=True)
+    time.sleep(.3)
+    msgOne()
+    time.sleep(.2)
+    print(blankScreen, flush=True)
+    time.sleep(.3)
+    print('Hard mode activated ', end = '', flush=True)
+    time.sleep(.5)
+    for i in range(0, 3):
+        print('. . ', end = '', flush=True)
+        time.sleep(.5)
 
 def gameTitle():
     print("""\n
@@ -512,4 +674,98 @@ def playerWinsMatch():
  |_|            |___/                                                                  
     \n""")
 
+def msgWarning():
+    print("""
+                           _             
+ __      ____ _ _ __ _ __ (_)_ __   __ _ 
+ \ \ /\ / / _` | '__| '_ \| | '_ \ / _` |
+  \ V  V / (_| | |  | | | | | | | | (_| |
+   \_/\_/ \__,_|_|  |_| |_|_|_| |_|\__, |
+                                   |___/ 
+    """)
+
+def msgThree():
+    print("""
+ 333333333333333   
+3:::::::::::::::33 
+3::::::33333::::::3
+3333333     3:::::3
+            3:::::3
+            3:::::3
+    33333333:::::3 
+    3:::::::::::3  
+    33333333:::::3 
+            3:::::3
+            3:::::3
+            3:::::3
+3333333     3:::::3
+3::::::33333::::::3
+3:::::::::::::::33 
+ 333333333333333  
+    """)
+
+def msgTwo():
+    print("""
+ 222222222222222    
+2:::::::::::::::22  
+2::::::222222:::::2 
+2222222     2:::::2 
+            2:::::2 
+            2:::::2 
+         2222::::2  
+    22222::::::22   
+  22::::::::222     
+ 2:::::22222        
+2:::::2             
+2:::::2             
+2:::::2       222222
+2::::::2222222:::::2
+2::::::::::::::::::2
+22222222222222222222
+    """)
+
+def msgOne():
+    print("""
+  1111111   
+ 1::::::1   
+1:::::::1   
+111:::::1   
+   1::::1   
+   1::::1   
+   1::::1   
+   1::::l   
+   1::::l   
+   1::::l   
+   1::::l   
+   1::::l   
+111::::::111
+1::::::::::1
+1::::::::::1
+111111111111
+    """)
+
+def shitTalk():
+    a = 'Are you actually trying, or just being nice to me?'
+    b = 'This is so easy, it is boring...'
+    c = 'You should be embarrassed...'
+    d = 'I can keep doing this all day.'
+    e = 'I am not really even trying.'
+    f = 'Are you even trying to win?'
+    g = 'Zzzzzz, oh I am sorry, I fell asleep'
+    h = 'Hurry up.'
+    i = 'Waiting on you...'
+    j = 'If you take more than 3 seconds to decide, you automatically lose.'
+    k = 'You should just give up now.'
+    l = 'You will never win.'
+    m = 'This is pointless.'
+    n = 'You are not the brightest crayon in the box.'
+    o = 'You are not the sharpest tool in the shed.'
+    p = 'Wow you are the smartest person I have ever met.'
+    q = 'Wow you are probably the best tic-tac-toe player in the world.'
+    r = 'You are not the brightest bulb in the box.'
+    s = 'You should be proud of yourself.'
+    t = 'You are doing great! Just kidding.'
+    shitList = [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t]
+    print(f'Computer says, "{shitList[random.randint(0,19)]}"\n')
+    
 main()
