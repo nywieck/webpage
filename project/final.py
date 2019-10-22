@@ -385,19 +385,23 @@ def decisionHard(board):
         if board[4] == 1:
             # D STRATEGY
             if board[5] == -1:
-                choiceDict = {2: 1}
+                choiceDict = {2:1}
             elif board[6] == -1:
-                choiceDict = {5: 1}
+                choiceDict = {5:1}
             # E STRATEGY
             elif board[3] == -1 or board[2] == -1:
-                choiceDict = {9: 1}
+                choiceDict = {9:1}
             # F STRATEGY
             elif board[9] == -1 or board[8] == -1:
-                choiceDict = {2: 1}
+                choiceDict = {2:1}
+            # CHRISTIAN'S FACEMELT
+            elif board[7] == -1:
+                choiceDict = {3:1}
+            else:
+                choiceDict = {9:1}
 
-            if choiceDict != False:
-                board.update(choiceDict)
-                return({1:board, 2:choiceDict})
+            board.update(choiceDict)
+            return({1:board, 2:choiceDict})
 
     # <<<<<<<  if occupiedSquares == 2, then means must be careful about unwinnable conditions, must prevent now   >>>>>>>
     # 6) EVAL FOURTH TURN - PREVENT guaranteed loss in next TWO turns
@@ -527,6 +531,9 @@ def decisionHard(board):
                 if board[6] == -1 or board[8] == -1:
                     choiceDict = {1:1}
             elif board[3] == 1:
+                if board[7] == -1:
+                    if board[1] == -1 or board[2] == -1 or board[5] == -1:
+                        choiceDict = {6:1}
                 if board[9] == -1:
                     if board[6] == -1:
                         choiceDict = {1:1}
@@ -541,6 +548,17 @@ def decisionHard(board):
             if choiceDict != False:
                 board.update(choiceDict)
                 return({1:board, 2:choiceDict})
+
+    if occupiedSquares == 6:
+        if board[4] == 1 and board[3] == 1 and board[8] == 1 and board[7] == -1 and board[9] == -1:
+            if board[6] == -1:
+                choiceDict = {2:1}
+            elif board[1] == -1:
+                choiceDict = {5:1}
+        
+        if choiceDict != False:
+            board.update(choiceDict)
+            return({1:board, 2:choiceDict})
             
     # <<<<<<< WHERE TO GO IF NONE OF THE ABOVE, NOT DETERMINED BY THE OCCUPIED SQUARES TURN COUNTER >>>>>>>
     # 8) EVAL where to go if all other above conditions not met
@@ -606,6 +624,7 @@ def hardInit():
     for i in range(0, 3):
         print('. . ', end = '', flush=True)
         time.sleep(.5)
+    print('\n\n')
 
 def gameTitle():
     print("""\n
