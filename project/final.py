@@ -11,6 +11,7 @@ def playGame():
     playerWin = 0
     hardMode = False
     while True:
+        time.sleep(.5)
         choice = input('Do you want to play easy mode, or hard mode (enter 1, 2, or 3):\n1: Easy mode\n2: Hard mode\n3: Impossible mode\n')
         try:
             keepPlaying = int(choice)
@@ -30,10 +31,13 @@ def playGame():
                 firstTimeHard = False
             elif firstTimeHard == False:
                 print('\nHard mode selected...\n')
+                time.sleep(.5)
         elif keepPlaying == 1:
             print('\nEasy mode selected...\n')
+            time.sleep(.5)
         elif keepPlaying == 3:
             print('\nImpossible mode selected...\n')
+            time.sleep(.5)
         nextTurn = coinToss()
         board = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
         drawBoard(board)
@@ -64,8 +68,10 @@ def playGame():
             playerWinsGame()
         else:
             drawMsg()
+        time.sleep(1)
         print(f'\nTotal games played: {gameCount}\nTotal computer wins: {compWin}\nTotal player wins: {playerWin}')
         while True:
+            time.sleep(.5)
             choice = input('\nPlay again (enter 1, 2, 3, or 4)?\n1: Yes, play again [EASY]\n2: Yes, play again [HARD]\n3: Yes, play again [IMPOSSIBLE]\n4: No, quit\n')
             try:
                 keepPlaying = int(choice)
@@ -80,16 +86,20 @@ def playGame():
     if compWin > playerWin:
         computerWinsMatch()
         print(f'Computer wins ({compWin} games to {playerWin} games)\n')
+        time.sleep(.5)
     elif playerWin > compWin:
         playerWinsMatch()
         print(f'Player wins ({playerWin} games to {compWin} games)\n')
+        time.sleep(.5)
     else:
         drawMsg()
         print(f'Draw, {playerWin} games each.\n')
+        time.sleep(.5)
     print('Thanks for playing!\n')
 
 def coinToss():
     print("So you know I am not cheating, flip a coin to decide who goes first, and I'll guess heads or tails!\n")
+    time.sleep(.5)
     input("Press Enter to continue...")
     guess = random.randrange(0, 2, 1)
     if guess == 0:
@@ -98,6 +108,7 @@ def coinToss():
         guess = "TAILS"
     print(f"\nI guessed {guess}!\n\nWho won and will be going first?\n")
     while True:
+        time.sleep(.5)
         firstTurn = input("Enter 1 or 2 to start game:\n1: Computer\n2: Player\n\n\n")
         try:
             choice = int(firstTurn)
@@ -134,7 +145,18 @@ def drawBoard(board):
         draw += '\n'
     print(f'\n{draw}')
 
-def endGame(board, player, mode):
+def winSquaresListFunct(board):
+    winSquares1 = [1, 4, 7]
+    winSquares2 = [2, 5, 8]
+    winSquares3 = [3, 6, 9]
+    winSquares4 = [7, 8, 9]
+    winSquares5 = [4, 5, 6]
+    winSquares6 = [1, 2, 3]
+    winSquares7 = [7, 5, 3]
+    winSquares8 = [1, 5, 9]
+    return([winSquares1, winSquares2, winSquares3, winSquares4, winSquares5, winSquares6, winSquares7, winSquares8])
+
+def winConListFunct(board):
     winCon1 = board[1] + board[4] + board[7]
     winCon2 = board[2] + board[5] + board[8]
     winCon3 = board[3] + board[6] + board[9]
@@ -143,10 +165,18 @@ def endGame(board, player, mode):
     winCon6 = board[1] + board[2] + board[3]
     winCon7 = board[7] + board[5] + board[3]
     winCon8 = board[1] + board[5] + board[9]
-    winConList = [winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8]
+    return([winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8])
+
+def endGame(board, player, mode):
+    winConList = winConListFunct(board)
     for i in winConList:
         if i == -3:
             if mode == 3:
+                time.sleep(.2)
+                print('\n\nT H I S   I S   I M P O S S I B L E    M O D E !\n')
+                time.sleep(1)
+                print('You will never "win"...')
+                time.sleep(1)
                 return(-1)
             return(-2)
         elif i == 3:
@@ -162,11 +192,17 @@ def endGame(board, player, mode):
             return(1)
     else:
         if mode == 3:
+            time.sleep(.2)
+            print('\n\nT H I S   I S   I M P O S S I B L E    M O D E !\n')
+            time.sleep(1)
+            print('You will never "win"...')
+            time.sleep(1)
             return(-1)
         return(0)
 
 def playerTurn(board, mode):
     while True:
+        time.sleep(.5)
         square = input("Choose your next move (enter the number): \n")
         try:
             choice = int(square)
@@ -187,7 +223,6 @@ def playerTurn(board, mode):
 
 # RETURN FROM DECISION FUNCTION IS A DICTIONARY, FIRST KEY:VALUE PAIR RETURNS THE DICT OF UPDATED BOARD, SECOND SQUARE CHOICE DICTIONARY
 def compTurn(board, mode):
-    print(mode)
     if mode == 1:
         results = decisionEasy(board)
     elif mode == 2:
@@ -198,8 +233,10 @@ def compTurn(board, mode):
     move = list(results[2].keys())
     drawBoard(board)
     print(f'\nComputer chose square {move[0]}\n\n')
+    time.sleep(.5)
     if mode == 2:
         shitTalk()
+        time.sleep(.5)
     return(endGame(board, 1, mode))
 
 def decisionImp(board):
@@ -210,24 +247,8 @@ def decisionImp(board):
             return({1:board, 2:choiceDict})
 
 def decisionEasy(board):
-    winCon1 = board[1] + board[4] + board[7]
-    winCon2 = board[2] + board[5] + board[8]
-    winCon3 = board[3] + board[6] + board[9]
-    winCon4 = board[7] + board[8] + board[9]
-    winCon5 = board[4] + board[5] + board[6]
-    winCon6 = board[1] + board[2] + board[3]
-    winCon7 = board[7] + board[5] + board[3]
-    winCon8 = board[1] + board[5] + board[9]
-    winSquares1 = [1, 4, 7]
-    winSquares2 = [2, 5, 8]
-    winSquares3 = [3, 6, 9]
-    winSquares4 = [7, 8, 9]
-    winSquares5 = [4, 5, 6]
-    winSquares6 = [1, 2, 3]
-    winSquares7 = [7, 5, 3]
-    winSquares8 = [1, 5, 9]
-    winConList = [winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8]
-    winSquaresList = [winSquares1, winSquares2, winSquares3, winSquares4, winSquares5, winSquares6, winSquares7, winSquares8]
+    winConList = winConListFunct(board)
+    winSquaresList = winSquaresListFunct(board)
     occupiedSquares = 0
     for i in range(1, 10, 1):
         if board[i] != 0:
@@ -268,24 +289,8 @@ def decisionEasy(board):
 # if go first, can try to setup guaranteed win
 # if go second, must prevent impossible loss
 def decisionHard(board):
-    winCon1 = board[1] + board[4] + board[7]
-    winCon2 = board[2] + board[5] + board[8]
-    winCon3 = board[3] + board[6] + board[9]
-    winCon4 = board[7] + board[8] + board[9]
-    winCon5 = board[4] + board[5] + board[6]
-    winCon6 = board[1] + board[2] + board[3]
-    winCon7 = board[7] + board[5] + board[3]
-    winCon8 = board[1] + board[5] + board[9]
-    winSquares1 = [1, 4, 7]
-    winSquares2 = [2, 5, 8]
-    winSquares3 = [3, 6, 9]
-    winSquares4 = [7, 8, 9]
-    winSquares5 = [4, 5, 6]
-    winSquares6 = [1, 2, 3]
-    winSquares7 = [7, 5, 3]
-    winSquares8 = [1, 5, 9]
-    winConList = [winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8]
-    winSquaresList = [winSquares1, winSquares2, winSquares3, winSquares4, winSquares5, winSquares6, winSquares7, winSquares8]
+    winConList = winConListFunct(board)
+    winSquaresList = winSquaresListFunct(board)
     choice = 0
     choiceDict = False
     occupiedSquares = 0
@@ -569,25 +574,26 @@ def decisionHard(board):
             return({1:board, 2:choiceDict})
 
 def hardInit():
-    print('Hard mode selected', flush=True)
+    print('\nHard mode selected', flush=True)
     time.sleep(1)
-    print('Virus detected', flush=True)
+    print('\nVirus detected', end = '', flush=True)
     time.sleep(.3)
     for i in range(0, 3):
-        print('. ', end=' ', flush=True)
-        time.sleep(.3)
+        print(' . ', end=' ', flush=True)
+        time.sleep(.5)
     virusMsg = 'Virus detected. '
     timer = .3
+    print('\n')
     for i in range(0, 3):
         print(virusMsg, flush=True)
-        time.sleep(.3)
-        timer -= .1
+        time.sleep(.5)
+        timer -= .2
     for i in range(0, 2000):
         print(virusMsg, end = '', flush=True)
         time.sleep(.001)
     errorMsg = 'Fatal error '
     for i in range(0, 80):
-        print(errorMsg + str(random.randint(1, 1000000)), flush=True)
+        print(errorMsg + str(random.randint(1, 10000)), flush=True)
         time.sleep(.05)
     for i in range(0, 40000):
         num = random.randint(0, 2)
@@ -619,12 +625,45 @@ def hardInit():
     time.sleep(.2)
     print(blankScreen, flush=True)
     time.sleep(.3)
-    print('Hard mode activated ', end = '', flush=True)
+    ackbar()
+    time.sleep(.6)
+    print(blankScreen, flush=True)
+    time.sleep(.3)
+    for i in range(0,2):
+        print('Hard mode activated', end = '', flush=True)
+        time.sleep(.2)
+        print(blankScreen, flush=True)
+        time.sleep(.1)
+    print('Hard mode activated', end = '', flush=True)
     time.sleep(.5)
-    for i in range(0, 3):
-        print('. . ', end = '', flush=True)
-        time.sleep(.5)
+    for i in range(0, 20):
+        print('.', end = '', flush=True)
+        time.sleep(.05)
     print('\n\n')
+
+def shitTalk():
+    a = 'Are you actually trying, or just being nice to me?'
+    b = 'This is so easy, it is boring...'
+    c = 'You should be embarrassed...'
+    d = 'I can keep doing this all day.'
+    e = 'I am not really even trying.'
+    f = 'Are you even trying to win?'
+    g = 'Zzzzzz, oh I am sorry, I fell asleep'
+    h = 'Hurry up.'
+    i = 'Waiting on you...'
+    j = 'If you take more than 3 seconds to decide, you automatically lose.'
+    k = 'You should just give up now.'
+    l = 'You will never win.'
+    m = 'This is pointless.'
+    n = 'You are not the brightest crayon in the box.'
+    o = 'You are not the sharpest tool in the shed.'
+    p = 'Wow you are the smartest person I have ever met.'
+    q = 'Wow you are probably the best tic-tac-toe player in the world.'
+    r = 'You are not the brightest bulb in the box.'
+    s = 'You should be proud of yourself.'
+    t = 'You are doing great! Just kidding.'
+    shitList = [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t]
+    print(f'Computer says, "{shitList[random.randint(0,19)]}"\n')
 
 def gameTitle():
     print("""\n
@@ -763,28 +802,54 @@ def msgOne():
 111111111111
     """)
 
-def shitTalk():
-    a = 'Are you actually trying, or just being nice to me?'
-    b = 'This is so easy, it is boring...'
-    c = 'You should be embarrassed...'
-    d = 'I can keep doing this all day.'
-    e = 'I am not really even trying.'
-    f = 'Are you even trying to win?'
-    g = 'Zzzzzz, oh I am sorry, I fell asleep'
-    h = 'Hurry up.'
-    i = 'Waiting on you...'
-    j = 'If you take more than 3 seconds to decide, you automatically lose.'
-    k = 'You should just give up now.'
-    l = 'You will never win.'
-    m = 'This is pointless.'
-    n = 'You are not the brightest crayon in the box.'
-    o = 'You are not the sharpest tool in the shed.'
-    p = 'Wow you are the smartest person I have ever met.'
-    q = 'Wow you are probably the best tic-tac-toe player in the world.'
-    r = 'You are not the brightest bulb in the box.'
-    s = 'You should be proud of yourself.'
-    t = 'You are doing great! Just kidding.'
-    shitList = [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t]
-    print(f'Computer says, "{shitList[random.randint(0,19)]}"\n')
-    
+def ackbar():
+    print("""\
+                            __...------------._
+                         ,-'                   `-.
+                      ,-'                         `.
+                    ,'                            ,-`.
+                   ;                              `-' `.
+                  ;                                 .-. \\
+                 ;                           .-.    `-'  \\
+                ;                            `-'          \\
+               ;                                          `.
+               ;                                           :
+              ;                                            |
+             ;                                             ;
+            ;                            ___              ;
+           ;                        ,-;-','.`.__          |
+       _..;                      ,-' ;`,'.`,'.--`.        |
+      ///;           ,-'   `. ,-'   ;` ;`,','_.--=:      /
+     |'':          ,'        :     ;` ;,;,,-'_.-._`.   ,'
+     '  :         ;_.-.      `.    :' ;;;'.ee.    \|  /
+      \.'    _..-'/8o. `.     :    :! ' ':8888)   || /
+       ||`-''    \\88o\ :     :    :! :  :`""'    ;;/
+       ||         \"88o\;     `.    \ `. `.      ;,'
+       /)   ___    `."'/(--.._ `.    `.`.  `-..-' ;--.
+       \(.=\"\"\"\"\"==.. `'-'     `.|      `-`-..__.-' `. `.
+        |          `"==.__      )                    )  ;
+        |   ||           `"=== '                   .'  .'
+        /\,,||||  | |           \                .'   .'
+        | |||'|' |'|'           \|             .'   _.' \\
+        | |\' |  |           || ||           .'    .'    \\
+        ' | \ ' |'  .   ``-- `| ||         .'    .'       \\
+          '  |  ' |  .    ``-.._ |  ;    .'    .'          `.
+       _.--,;`.       .  --  ...._,'   .'    .'              `.__
+     ,'  ,';   `.     .   --..__..--'.'    .'                __/_\\
+   ,'   ; ;     |    .   --..__.._.'     .'                ,'     `.
+  /    ; :     ;     .    -.. _.'     _.'                 /         `
+ /     :  `-._ |    .    _.--'     _.'                   |
+/       `.    `--....--''       _.'                      |
+          `._              _..-'                         |
+             `-..____...-''                              |
+                                                         |
+                                                         |
+
+  ___ _____ _ ____       _      _____ ____      _    ____  _ 
+ |_ _|_   _( ) ___|     / \    |_   _|  _ \    / \  |  _ \| |
+  | |  | | |/\___ \    / _ \     | | | |_) |  / _ \ | |_) | |
+  | |  | |    ___) |  / ___ \    | | |  _ <  / ___ \|  __/|_|
+ |___| |_|   |____/  /_/   \_\   |_| |_| \_\/_/   \_\_|   (_)                                                         
+""")
+
 main()
