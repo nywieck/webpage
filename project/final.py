@@ -630,7 +630,7 @@ def hardInit():
     time.sleep(.6)
     print(blankScreen, flush=True)
     time.sleep(.3)
-    for i in range(0,2):
+    for i in range(0,4):
         print('Hard mode activated', end = '', flush=True)
         time.sleep(.2)
         print(blankScreen, flush=True)
@@ -640,10 +640,10 @@ def hardInit():
     for i in range(0, 20):
         print('.', end = '', flush=True)
         time.sleep(.05)
-    print('\nTo continue, enter your social security number:')
-    time.sleep(1.5)
-    print('Just kidding.\n\n')
-    time.sleep(.5)
+    print('\nTo continue, enter your social security number: ', end='')
+    time.sleep(2)
+    print('Just kidding!\n\n')
+    time.sleep(1)
 
 def shitTalk():
     a = 'Are you actually trying, or just being nice to me?'
