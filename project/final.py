@@ -68,7 +68,6 @@ def playGame():
             playerWinsGame()
         else:
             drawMsg()
-        time.sleep(1)
         print(f'\nTotal games played: {gameCount}\nTotal computer wins: {compWin}\nTotal player wins: {playerWin}')
         while True:
             time.sleep(.5)
@@ -202,15 +201,16 @@ def endGame(board, player, mode):
 
 def playerTurn(board, mode):
     while True:
-        time.sleep(.5)
         square = input("Choose your next move (enter the number): \n")
         try:
             choice = int(square)
             if choice < 1 or choice > 9:
                 print("You have fat fingers - input must be an integer from 1 to 9!\n")
+                time.sleep(.5)
                 continue
             elif board[choice] != 0:
                 print("You cannot move there, the square is already taken - try again!\n")
+                time.sleep(.5)
                 continue
             else:
                 choiceDict = {choice: -1}
@@ -218,6 +218,7 @@ def playerTurn(board, mode):
                 break
         except ValueError:
             print("You have fat fingers - input must be an integer from 1 to 9!\n")
+            time.sleep(.5)
     drawBoard(board)
     return(endGame(board, 2, mode))
 
@@ -236,7 +237,7 @@ def compTurn(board, mode):
     time.sleep(.5)
     if mode == 2:
         shitTalk()
-        time.sleep(.5)
+        time.sleep(1.5)
     return(endGame(board, 1, mode))
 
 def decisionImp(board):
@@ -639,7 +640,10 @@ def hardInit():
     for i in range(0, 20):
         print('.', end = '', flush=True)
         time.sleep(.05)
-    print('\n\n')
+    print('\nTo continue, enter your social security number:')
+    time.sleep(1.5)
+    print('Just kidding.\n\n')
+    time.sleep(.5)
 
 def shitTalk():
     a = 'Are you actually trying, or just being nice to me?'
