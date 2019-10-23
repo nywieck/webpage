@@ -47,12 +47,9 @@ def playGame():
             if nextTurn == 1:
                 print('\nHmm analyzing', end=' ', flush=True)
                 time.sleep(.5)
-                print('. ', end=' ', flush=True)
-                time.sleep(.5)
-                print('. ', end=' ', flush=True)
-                time.sleep(.5)
-                print('. \n', end=' ', flush=True)
-                time.sleep(.5)
+                for i in range(3):
+                    print('. ', end=' ', flush=True)
+                    time.sleep(.5)
                 nextTurn = compTurn(board, keepPlaying)
                 turnCount += 1
             elif nextTurn == 2:
@@ -142,7 +139,7 @@ def drawBoard(board):
         for j in range(0, len(display[0]), 1):
             draw += str(display[i][j])
         draw += '\n'
-    print(f'\n{draw}')
+    print(f'\n\n{draw}')
 
 def winSquaresListFunct(board):
     winSquares1 = [1, 4, 7]
@@ -233,7 +230,7 @@ def compTurn(board, mode):
     board = results[1]
     move = list(results[2].keys())
     drawBoard(board)
-    print(f'\nComputer chose square {move[0]}\n\n')
+    print(f'\nComputer chose square {move[0]}\n')
     time.sleep(.5)
     if mode == 2:
         shitTalk()
@@ -612,7 +609,7 @@ def hardInit():
         msgWarning()
         time.sleep(.3)
         print(blankScreen, flush=True)
-        time.sleep(.1)
+        time.sleep(.2)
     time.sleep(.15)
     msgThree()
     time.sleep(.2)
