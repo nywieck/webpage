@@ -1,9 +1,41 @@
+# Tic-tac-toe game, player vs computer. Player can choose easy, hard, or impossible play modes.
+#   Keeps track of wins, losses, and games played, and asks if user wants to continue playing or quit after each game.
+
+# Basic overall program design and implementation concepts were very important prior to starting to code, and still changed over time.
+#   Important conepts included:
+#       1) Tracking board state with a dictionary with keys as board squares and values as -1 (player), 0 (open), and 1 (computer).
+#       2) How to design overall game loops in the playGame function. Eventually became obvious board state would have to be passed
+#               through entire game and all other functions as input parameter and output return for game to function as we designed it.
+#       3) How to track effectively track play mode, player turn throughout entire program and game state.
+#               Carefully defining, updating, and passing nextTurn value is important. This was a challenging problem to solve because
+#               so many different functions are called that require different parameters be passed to behave as desired.
+#               For example the endGame function requires 3 parameters are passed so will behave correctly.
+#       4) Computer decision making process (required most strategic problem solving, and is majority of game code).
+#               There is probably a more effective way to implement the computer decision making process by identifying underlying patterns,
+#               but it works, and we evaluated all the potential outcomes and strategies on our own without looking up any strategies
+#               and/or code online.
+
+# Sample of overall function call flow is:
+#   main()
+#       -> playGame()
+#           -> coinToss()
+#               -> drawBoard(board)
+#                   -> compTurn(board, keepPlaying)
+#                       -> decisionHard(board, mode)
+#                           -> drawBoard(board)
+#                               -> endGame(board, player, mode)
+
 import random
 import time
 
+# Call playGame()
 def main():
     playGame()
 
+# playGame() has two primary while loops: first the keepPlaying loop, and second the nextTurn loop. First it asks user for game mode.
+# keepPlaying loop first calls coinToss(), creates first board dictionary required to run all functions and entire game, calls drawBoard()
+# keepPlaying loop primarily keeps track of game mode (easy, hard, impossible, quit), game running totals, and contains nextTurn loop.
+# nextTurn loop keeps track of game to determine if win, loss, draw or continue, tracks and controls turns by calling playerTurn or compTurn.
 def playGame():
     gameTitle()
     gameCount = 0
@@ -78,7 +110,7 @@ def playGame():
                     break
             except ValueError:
                 print("You have fat fingers - input must be the integer 1, 2, or 3, try again!\n")
-        
+
     if compWin > playerWin:
         computerWinsMatch()
         print(f'Computer wins ({compWin} games to {playerWin} games)\n')
@@ -93,6 +125,7 @@ def playGame():
         time.sleep(.5)
     print('Thanks for playing!\n')
 
+# Determines if player or computer goes first
 def coinToss():
     print("So you know I am not cheating, flip a coin to decide who goes first, and I'll guess heads or tails!\n")
     time.sleep(.5)
@@ -116,6 +149,7 @@ def coinToss():
         except ValueError:
             print("You have fat fingers - input must be the integer 1 or 2, try again!\n")
 
+# Draws the graphical version of the current board state for the player to see
 def drawBoard(board):
     occupiedList = []
     for i in range(0, 9, 1):
@@ -141,6 +175,7 @@ def drawBoard(board):
         draw += '\n'
     print(f'\n\n{draw}')
 
+# Creates a nested list of all possible winning board position patterns - used for computer decision making process
 def winSquaresListFunct(board):
     winSquares1 = [1, 4, 7]
     winSquares2 = [2, 5, 8]
@@ -152,6 +187,7 @@ def winSquaresListFunct(board):
     winSquares8 = [1, 5, 9]
     return([winSquares1, winSquares2, winSquares3, winSquares4, winSquares5, winSquares6, winSquares7, winSquares8])
 
+# Creates nested list of mathematical sums of all possible winning board position patterns - used in endGame() function.
 def winConListFunct(board):
     winCon1 = board[1] + board[4] + board[7]
     winCon2 = board[2] + board[5] + board[8]
@@ -163,6 +199,8 @@ def winConListFunct(board):
     winCon8 = board[1] + board[5] + board[9]
     return([winCon1, winCon2, winCon3, winCon4, winCon5, winCon6, winCon7, winCon8])
 
+# Determines if game continues and which players turn next, or if ends and who wins or loses, or if a draw.
+# If impossible mode, then computer will always win no matter what outcome.
 def endGame(board, player, mode):
     winConList = winConListFunct(board)
     for i in winConList:
@@ -196,6 +234,7 @@ def endGame(board, player, mode):
             return(-1)
         return(0)
 
+# Player's turn is relatively simple becasue only validates user input and updates board dictionary accorindly, passes turn
 def playerTurn(board, mode):
     while True:
         square = input("Choose your next move (enter the number): \n")
@@ -219,7 +258,10 @@ def playerTurn(board, mode):
     drawBoard(board)
     return(endGame(board, 2, mode))
 
-# RETURN FROM DECISION FUNCTION IS A DICTIONARY, FIRST KEY:VALUE PAIR RETURNS THE DICT OF UPDATED BOARD, SECOND SQUARE CHOICE DICTIONARY
+# Calls appropriate decision function depending on play mode (easy, hard, impossible)
+# To print the computer's move decision, need to return two values from the decision function so return a dictionary then translate here.
+# First key:value pair is the board state, second pair is the computer's specific move decision.
+# If player chose hard mode, then shitTalk() function is also called.
 def compTurn(board, mode):
     if mode == 1:
         results = decisionEasy(board)
@@ -237,6 +279,8 @@ def compTurn(board, mode):
         time.sleep(1.5)
     return(endGame(board, 1, mode))
 
+# Since computer will win no matter what, AI here is not important and just bare minimum to choose an unoccupied square.
+# Computer always wins with this mode and deciison AI!
 def decisionImp(board):
     for i in range(1, 10):
         if board[i] == 0:
@@ -244,6 +288,9 @@ def decisionImp(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
+# More AI thatn decisionImp, but only enough so computer will win or prevent loss this turn but doesn't project two turns out to prevent
+# guaranteed loss situations, or employ those aggressive two-turn setup guaranteed win strategies.
+# Computer can lose with this mode and decision AI!
 def decisionEasy(board):
     winConList = winConListFunct(board)
     winSquaresList = winSquaresListFunct(board)
@@ -251,15 +298,15 @@ def decisionEasy(board):
     for i in range(1, 10, 1):
         if board[i] != 0:
             occupiedSquares += 1
-    
-    # 1) TURN 1 RANDOMLY DECIDE IF GO FIRST
+
+    # 1) TURN 1: A) Randomly decide where to go first
     if occupiedSquares == 0:
         move = random.randrange(1, 10, 1)
         choiceDict = {move:1}
         board.update(choiceDict)
         return({1:board, 2:choiceDict})
 
-    # 2) ALWAYS EVAL IF CAN WIN THIS TURN
+    # 2) First, always evaluate if can win this turn and choose that square to win
     for i in range(0, 8, 1):
         if winConList[i] == 2:
             for j in winSquaresList[i]:
@@ -268,7 +315,7 @@ def decisionEasy(board):
                     board.update(choiceDict)
                     return({1:board, 2:choiceDict})
 
-    # 3) ALWAYS EVAL IF NEED TO PREVENT LOSS THIS TURN
+    # 3) Second, always evaluate if can lose this turn and choose that square to prevent loss
     for i in range(0, 8, 1):
         if winConList[i] == -2:
             for j in winSquaresList[i]:
@@ -277,15 +324,18 @@ def decisionEasy(board):
                     board.update(choiceDict)
                     return({1:board, 2:choiceDict})
 
-    # 4) EVAL where to go if all other above conditions not met
+    # 4) Last, choose square if all other above conditions not met
     for i in range(1, 10):
         if board[i] == 0:
             choiceDict = {i:1}
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
-# if go first, can try to setup guaranteed win
-# if go second, must prevent impossible loss
+
+# AI here is most robust. Employs aggressive two-turn setup guaranteed win strategies, and defends against same strategies.
+# If occupiedSquares variable is even then computer went first, if odd then player went first.
+# For most (but not all) cases, if computer goes first more aggressive strategies employed and if goes second more defensive.
+# Computer never loses with this mode and decision AI!
 def decisionHard(board):
     winConList = winConListFunct(board)
     winSquaresList = winSquaresListFunct(board)
@@ -296,22 +346,22 @@ def decisionHard(board):
         if board[i] != 0:
             occupiedSquares += 1
 
-    # 1) EVAL FIRST TURN
+    # 1) TURN 1: A) If go first, randomly decide which aggressive two-turn setup guaranteed win strategy to initiate
     if occupiedSquares == 0:
         strategy = random.randrange(0, 3, 1)
-        # ORIGINAL
+        # A) Middle strategy
         if strategy == 1:
             choiceDict = {5:1}
-        # NEW CORNER
+        # B) Corner strategy
         elif strategy == 2:
             choiceDict = {7:1}
-        # NEW SIDE
+        # C) Side strategy
         else:
             choiceDict = {4:1}
         board.update(choiceDict)
         return({1:board, 2:choiceDict})
 
-    # 2) EVAL SECOND TURN
+    # 2) TURN 2: Already can successfully defend and eliminate one potential aggressive two-turn setup guaranteed loss strategy here
     if occupiedSquares == 1:
         if board[5] == 0:
             choiceDict = {5:1}
@@ -322,7 +372,7 @@ def decisionHard(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
-    # 3) ALWAYS EVAL IF CAN WIN THIS TURN
+    # 3) First, always evaluate if can win this turn and choose that square to win
     for i in range(0, 8, 1):
         if winConList[i] == 2:
             for j in winSquaresList[i]:
@@ -331,7 +381,7 @@ def decisionHard(board):
                     board.update(choiceDict)
                     return({1:board, 2:choiceDict})
 
-    # 4) ALWAYS EVAL IF NEED TO PREVENT LOSS THIS TURN
+    # 4) Second, always evaluate if can lose this turn and choose that square to prevent loss
     for i in range(0, 8, 1):
         if winConList[i] == -2:
             for j in winSquaresList[i]:
@@ -340,10 +390,8 @@ def decisionHard(board):
                     board.update(choiceDict)
                     return({1:board, 2:choiceDict})
 
-    # 5) EVAL THIRD TURN
-    # <<<<<<<  if occupiedSquares == 2, then means can be aggressive don't need worry about unwinnable, try to setup own >>>>>>>
-    # <<<<<<<  phase 1 is in third turn, phase 2 is in fifth turn if works out, and last move in turn 7 will be auto by above code >>>>>>>
-    # A
+    # 5) TURN 3: can be more aggressive. Phase 1 of aggressive two-turn setup guaranteed win strategies here, phase 2 in TURN 5.
+    # A) 1. Middle strategy section one
     if occupiedSquares == 2:
         if board[5] == 1:
             if board[6] == -1:
@@ -354,7 +402,7 @@ def decisionHard(board):
                 choiceDict = {6:1}
             elif board[2] == -1:
                 choiceDict = {8: 1}
-            # B
+            # A) 2. Middle strategy section two
             elif board[1] == -1:
                 choiceDict = {9: 1}
             elif board[3] == -1:
@@ -367,15 +415,14 @@ def decisionHard(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
-        # C NEW CORNER STRATEGY
+        # B) 1. Corner strategy section one
         if board[7] == 1:
-            # C1 STRATEGY
             if board[5] == -1:
                 choiceDict = {3: 1}
-            # C2 THIS IS A SUB-CORNER STRATEGY THAT WILL USE THE SAME PATTERN AS CODED BELOW BUT STARTING SQUARE 3
+            # B) 2. Corner strategy section two
             elif board[5] == 0 and board[3] == -1:
                 choiceDict = {5: 1}
-            # C3 STRATEGY
+            # B) 3. Corner strategy section three
             elif board[1] == -1 or board[2] == -1 or board[4] == -1:
                 choiceDict = {6: 1}
             elif board[6] == -1 or board[8] == -1 or board[9] == -1:
@@ -385,19 +432,19 @@ def decisionHard(board):
                 board.update(choiceDict)
                 return({1:board, 2:choiceDict})
 
+        # C) 1. Side strategy section one
         if board[4] == 1:
-            # D STRATEGY
             if board[5] == -1:
                 choiceDict = {2:1}
             elif board[6] == -1:
                 choiceDict = {5:1}
-            # E STRATEGY
+            # C) 2. Side strategy section two
             elif board[3] == -1 or board[2] == -1:
                 choiceDict = {9:1}
-            # F STRATEGY
+            # C) 3. Side strategy section three
             elif board[9] == -1 or board[8] == -1:
                 choiceDict = {2:1}
-            # CHRISTIAN'S FACEMELT
+            # C) 4. Side strategy CHRISTIAN'S FACEMELT 
             elif board[7] == -1:
                 choiceDict = {3:1}
             else:
@@ -406,9 +453,7 @@ def decisionHard(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
-    # <<<<<<<  if occupiedSquares == 2, then means must be careful about unwinnable conditions, must prevent now   >>>>>>>
-    # 6) EVAL FOURTH TURN - PREVENT guaranteed loss in next TWO turns
-    if occupiedSquares == 3:
+    # 6) TURN 4: must be careful, defend and prevent aggressive two-turn setup guaranteed loss strategies here
         prevent1 = [[1, 5, 9], [3, 5, 7], [9, 5, 1], [7, 5, 3]]
         for layout in prevent1:
             if board[layout[0]] == 1 and board[layout[1]] == -1 and board[layout[2]] == -1:
@@ -455,8 +500,8 @@ def decisionHard(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
-    # 7) FIFTH TURN - COMPLETE setting up guaranteed win if went first here
-    # A
+    # 7) TURN 5: COMPLETE aggressive two-turn setup guaranteed win strategies
+    # A)
     if occupiedSquares == 4:
         if board[5] == 1:
             if board[4] == 1 and board[6] == -1 and board[8] == -1:
@@ -552,6 +597,7 @@ def decisionHard(board):
                 board.update(choiceDict)
                 return({1:board, 2:choiceDict})
 
+    # TURN 7: One case where need to complete aggressive guaranteed win strategy
     if occupiedSquares == 6:
         if board[4] == 1 and board[3] == 1 and board[8] == 1 and board[7] == -1 and board[9] == -1:
             if board[6] == -1:
@@ -563,16 +609,19 @@ def decisionHard(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
             
-    # <<<<<<< WHERE TO GO IF NONE OF THE ABOVE, NOT DETERMINED BY THE OCCUPIED SQUARES TURN COUNTER >>>>>>>
-    # 8) EVAL where to go if all other above conditions not met
+    # 8) Last, choose square if all other above conditions not met. This method also always automatically executes an
+    # aggressive two-turn setup guaranteed win strategy, in combination with decision trees above.
     for i in range(1, 10):
         if board[i] == 0:
             choiceDict = {i:1}
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
+# Just a for fun function that executes the very first time player selects hard play mode. Calls ascii art functions below.
+# This was very fun to "program". Felt more like using a video editor to make a movie than programming in python.
 def hardInit():
-    print('\nHard mode selected', flush=True)
+    print('\nHard mode initiating.\n')
+    msgErr()
     time.sleep(1)
     print('\nVirus detected', end = '', flush=True)
     time.sleep(.3)
@@ -590,8 +639,29 @@ def hardInit():
         print(virusMsg, end = '', flush=True)
         time.sleep(.001)
     errorMsg = 'Fatal error '
-    for i in range(0, 80):
-        print(errorMsg + str(random.randint(1, 10000)), flush=True)
+    for i in range(0, 50):
+        fullLine = ''
+        if i < 10:
+            print(errorMsg + str(random.randint(1, 10000)), flush=True)
+            time.sleep(.05)
+        elif i >= 10 and i < 20:
+            for j in range(2):
+                fullLine += errorMsg + str(random.randint(1, 10000)) + '\t\t\t\t'
+            print(fullLine, flush=True)
+            time.sleep(.05)
+        elif i >= 20 and i < 30:
+            for j in range(2):
+                fullLine += errorMsg + str(random.randint(1, 10000)) + '\t'
+                if j == 1:
+                    fullLine += '\t' + errorMsg + str(random.randint(1, 10000))
+            print(fullLine, flush=True)
+            time.sleep(.05)
+        elif i >= 30:
+            for j in range(8):
+                fullLine += errorMsg + str(random.randint(1, 10000)).ljust(25)
+            print(fullLine, flush=True)
+            time.sleep(.05)
+        print(errorMsg + str(random.randint(1, 10000)).ljust(25), flush=True)
         time.sleep(.05)
     for i in range(0, 30000):
         num = random.randint(0, 2)
@@ -642,6 +712,21 @@ def hardInit():
     print('Just kidding!\n\n')
     time.sleep(1)
 
+# VFX used in hardInit()
+def msgErr():
+    print("""
+Traceback (most recent call last):
+    File "final.py", line 867, in <module>
+        main()
+    File "final.py", line 328, in main
+        print(decisionHard(1))
+    File "final.py", line 71, in main
+        print(keepPlaying(-2))
+    File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/bdb.py", line 88, in trace_dispatch
+        return self.dispatch_line(frame)
+    """)
+
+# Computer talks trash when in hard mode
 def shitTalk():
     a = 'Are you actually trying, or just being nice to me?'
     b = 'This is so easy, it is boring...'
@@ -666,6 +751,7 @@ def shitTalk():
     shitList = [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t]
     print(f'Computer says, "{shitList[random.randint(0,19)]}"\n')
 
+# VFX
 def gameTitle():
     print("""\n
   _   _        _               _             
@@ -675,6 +761,7 @@ def gameTitle():
  | |_| | (__  | || (_| | (__  | || (_) |  __/
   \__|_|\___|  \__\__,_|\___|  \__\___/ \___|\n\n""")
 
+# VFX
 def computerWinsGame():
     print("""\n\n
                                   _                       _           
@@ -687,6 +774,7 @@ def computerWinsGame():
                      |_|                                              
     \n\n""")
 
+# VFX
 def playerWinsGame():
     print("""\n\n
         _                                  _           
@@ -699,6 +787,7 @@ def playerWinsGame():
  |_|            |___/                                  
     \n\n""")
 
+# VFX
 def drawMsg():
     print("""\n\n
       _                    
@@ -709,6 +798,7 @@ def drawMsg():
   \__,_|_|  \__,_| \_/\_/  
     \n\n""")
 
+# VFX
 def computerWinsMatch():
     print("""
                                   _                       _                             _       _     
@@ -721,6 +811,7 @@ def computerWinsMatch():
                      |_|                                                                              
     \n""")
 
+# VFX
 def playerWinsMatch():
     print("""
         _                                  _                             _       _     
@@ -733,6 +824,7 @@ def playerWinsMatch():
  |_|            |___/                                                                  
     \n""")
 
+# VFX
 def msgWarning():
     print("""
                            _             
@@ -743,6 +835,7 @@ def msgWarning():
                                    |___/ 
     """)
 
+# VFX
 def msgThree():
     print("""
  333333333333333   
@@ -763,6 +856,7 @@ def msgThree():
  333333333333333  
     """)
 
+# VFX
 def msgTwo():
     print("""
  222222222222222    
@@ -783,6 +877,7 @@ def msgTwo():
 22222222222222222222
     """)
 
+# VFX
 def msgOne():
     print("""
   1111111   
@@ -803,6 +898,7 @@ def msgOne():
 111111111111
     """)
 
+# VFX
 def ackbar():
     print("""\
                             __...------------._
@@ -853,4 +949,5 @@ def ackbar():
  |___| |_|   |____/  /_/   \_\   |_| |_| \_\/_/   \_\_|   (_)                                                         
 """)
 
+# Initiate program
 main()
