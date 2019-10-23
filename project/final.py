@@ -1,5 +1,5 @@
 # Tic-tac-toe game, player vs computer. Player can choose easy, hard, or impossible play modes.
-#   Keeps track of wins, losses, and games played, and asks if user wants to continue playing or quit after each game.
+# Keeps track of wins, losses, and games played, and asks if user wants to continue playing or quit after each game.
 
 # Basic overall program design and implementation concepts were very important prior to starting to code, and still changed over time.
 #   Important conepts included:
@@ -14,6 +14,11 @@
 #               There is probably a more effective way to implement the computer decision making process by identifying underlying patterns,
 #               but it works, and we evaluated all the potential outcomes and strategies on our own without looking up any strategies
 #               and/or code online.
+
+# The two most important variables in the program are probably "nextTurn" and "board". They are passed through many functions.
+#   "nextTurn" variable is an integer value (-2 is player wins, -1 is computer wins, 0 is draw, 1 is computers turn, 2 is players turn).
+#   "board" variable is a dictionary: keys 1-9 represent board squares, and corresponding value -1 for player owns square,
+#   0 for square available, and 1 for computer owns square.
 
 # Sample of overall function call flow is:
 #   main()
@@ -597,7 +602,7 @@ def decisionHard(board):
                 board.update(choiceDict)
                 return({1:board, 2:choiceDict})
 
-    # TURN 7: One case where need to complete aggressive guaranteed win strategy
+    # 8) TURN 7: One case where need to complete aggressive guaranteed win strategy
     if occupiedSquares == 6:
         if board[4] == 1 and board[3] == 1 and board[8] == 1 and board[7] == -1 and board[9] == -1:
             if board[6] == -1:
@@ -609,7 +614,7 @@ def decisionHard(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
             
-    # 8) Last, choose square if all other above conditions not met. This method also always automatically executes an
+    # 9) Last, choose square if all other above conditions not met. This method also always automatically executes an
     # aggressive two-turn setup guaranteed win strategy, in combination with decision trees above.
     for i in range(1, 10):
         if board[i] == 0:
@@ -663,7 +668,7 @@ def hardInit():
             time.sleep(.05)
         print(errorMsg + str(random.randint(1, 10000)).ljust(25), flush=True)
         time.sleep(.05)
-    for i in range(0, 30000):
+    for i in range(0, 15000):
         num = random.randint(0, 2)
         if num == 0:
             print('0', end = '', flush=True)
@@ -694,7 +699,7 @@ def hardInit():
     print(blankScreen, flush=True)
     time.sleep(.3)
     ackbar()
-    time.sleep(.6)
+    time.sleep(1)
     print(blankScreen, flush=True)
     time.sleep(.3)
     for i in range(0,4):
