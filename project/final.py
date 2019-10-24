@@ -525,6 +525,10 @@ def decisionHard(board):
                 choiceDict = {9:1}
             elif board[8] == 1 and board[2] == -1 and board[6] == -1:
                 choiceDict = {7:1}
+            elif board[8] == -1 and board[2] == 1:
+                if board[1] == -1 or board[3] == -1:
+                    choiceDict = {7:1}
+
             # B 
             elif (board[1] == -1 and board[8] == -1 and board[6] == 1) or (board[3] == -1 and board[4] == -1 and board[7] == 1):
                 choiceDict = {8:1}
@@ -562,6 +566,16 @@ def decisionHard(board):
                     choiceDict = {1:1}
                 elif board[4] == -1:
                     choiceDict = {9:1}
+
+            # C4 STRATEGY LAST
+            elif board[9] == 1:
+                if board[8] == -1:
+                    if board[4] == -1 or board[6] == -1:
+                        choiceDict = {5:1}
+            elif board[1] == 1:
+                if board[4] == -1:
+                    if board[8] == -1 or board[2] == -1:
+                        choiceDict = {5:1}
 
                 if choiceDict != False:
                     board.update(choiceDict)
