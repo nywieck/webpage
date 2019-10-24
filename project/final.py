@@ -601,6 +601,14 @@ def decisionHard(board):
                     if board[8] == -1 or board[2] == -1:
                         choiceDict = {5:1}
 
+            elif board[6] == 1:
+                if board[4] == -1:
+                    choiceDict = {9:1}
+
+            elif board[2] == 1:
+                if board[8] == -1:
+                    choiceDict = {1:1}
+
             if choiceDict != False:
                 board.update(choiceDict)
                 return({1:board, 2:choiceDict})
