@@ -461,6 +461,7 @@ def decisionHard(board):
             return({1:board, 2:choiceDict})
 
     # 6) TURN 4: must be careful, defend and prevent aggressive two-turn setup guaranteed loss strategies here
+    if occupiedSquares == 3:
         prevent1 = [[1, 5, 9], [3, 5, 7], [9, 5, 1], [7, 5, 3]]
         for layout in prevent1:
             if board[layout[0]] == 1 and board[layout[1]] == -1 and board[layout[2]] == -1:
@@ -530,7 +531,29 @@ def decisionHard(board):
             elif board[8] == -1 and board[2] == 1:
                 if board[1] == -1 or board[3] == -1:
                     choiceDict = {7:1}
-
+            
+            # G
+            elif board[1] == 1:
+                if board[2] == -1:
+                    choiceDict = {4:1}
+                if board[4] == -1:
+                    choiceDict = {2:1}
+            elif board[3] == 1:
+                if board[2] == -1:
+                    choiceDict = {6:1}
+                elif board[6] == -1:
+                    choiceDict = {2:1}
+            elif board[9] == 1:
+                if board[8] == -1:
+                    choiceDict = {6:1}
+                elif board[6] == -1:
+                    choiceDict = {8:1}
+            elif board[7] == 1:
+                if board[8] == -1:
+                    choiceDict = {4:1}
+                elif board[4] == -1:
+                    choiceDict = {8:1}
+            
             # B 
             elif (board[1] == -1 and board[8] == -1 and board[6] == 1) or (board[3] == -1 and board[4] == -1 and board[7] == 1):
                 choiceDict = {8:1}
@@ -643,7 +666,7 @@ def decisionHard(board):
 def hardInit():
     print('\nHard mode initiating.\n')
     msgErr()
-    time.sleep(1)
+    time.sleep(1.5)
     print('\nVirus detected', end = '', flush=True)
     time.sleep(.3)
     for i in range(0, 3):
