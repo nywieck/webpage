@@ -34,7 +34,7 @@ def playGame():
         if gameCount == 10000:
             nextTurn = -1
             print('\nRESULTS')
-            print('Game play mode: HARD')
+            print('Game play mode: HARD (both players using hard mode AI, is unbeatable)')
             print(f'Total Games: {gameCount}')
             print(f'Comp Player wins: {playerWin}')
             print(f'Comp Wins: {compWin}\n')

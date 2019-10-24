@@ -225,10 +225,7 @@ def endGame(board, player, mode):
         if board[i] == 0:
             countOpen += 1
     if countOpen != 0:
-        if player == 1:
-            return(2)
-        elif player == 2:
-            return(1)
+        return(player)
     else:
         if mode == 3:
             time.sleep(.2)
@@ -261,7 +258,7 @@ def playerTurn(board, mode):
             print("You have fat fingers - input must be an integer from 1 to 9!\n")
             time.sleep(.5)
     drawBoard(board)
-    return(endGame(board, 2, mode))
+    return(endGame(board, 1, mode))
 
 # Calls appropriate decision function depending on play mode (easy, hard, impossible)
 # To print the computer's move decision, need to return two values from the decision function so return a dictionary then translate here.
@@ -282,7 +279,7 @@ def compTurn(board, mode):
     if mode == 2:
         shitTalk()
         time.sleep(1)
-    return(endGame(board, 1, mode))
+    return(endGame(board, 2, mode))
 
 # Since computer will win no matter what, AI here is not important and just bare minimum to choose an unoccupied square.
 # Computer always wins with this mode and deciison AI!

@@ -33,7 +33,8 @@ def playGame():
 
         if gameCount == 10000:
             flag = 1
-            print('\nGAME PLAY MODE: EASY')
+            print('\nRESULTS')
+            print('Game play mode: EASY (Comp Player using easy mode AI which is beatable, and Comp using hard mode AI which is unbeatable)')
             print(f'Total Games: {gameCount}')
             print(f'Comp Player wins: {playerWin}')
             print(f'Comp Wins: {compWin}\n')
