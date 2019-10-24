@@ -423,15 +423,17 @@ def decisionHard(board):
         # B) 1. Corner strategy section one
         if board[7] == 1:
             if board[5] == -1:
-                choiceDict = {3: 1}
+                choiceDict = {3:1}
             # B) 2. Corner strategy section two
             elif board[5] == 0 and board[3] == -1:
-                choiceDict = {5: 1}
+                choiceDict = {5:1}
             # B) 3. Corner strategy section three
             elif board[1] == -1 or board[2] == -1 or board[4] == -1:
-                choiceDict = {6: 1}
-            elif board[6] == -1 or board[8] == -1 or board[9] == -1:
-                choiceDict = {2: 1}
+                choiceDict = {6:1}
+            elif board[6] == -1 or board[9] == -1:
+                choiceDict = {2:1}
+            else:
+                choiceDict = {9:1}
 
             if choiceDict != False:
                 board.update(choiceDict)
