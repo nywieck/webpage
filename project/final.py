@@ -344,7 +344,6 @@ def decisionEasy(board):
 def decisionHard(board):
     winConList = winConListFunct(board)
     winSquaresList = winSquaresListFunct(board)
-    choice = 0
     choiceDict = False
     occupiedSquares = 0
     for i in range(1, 10, 1):
@@ -428,10 +427,12 @@ def decisionHard(board):
             elif board[5] == 0 and board[3] == -1:
                 choiceDict = {5:1}
             # B) 3. Corner strategy section three
-            elif board[1] == -1 or board[2] == -1 or board[4] == -1:
+            elif board[1] == -1 or board[2] == -1:
                 choiceDict = {6:1}
             elif board[6] == -1 or board[9] == -1:
                 choiceDict = {2:1}
+            elif board[4] == -1:
+                choiceDict = {1:1}
             else:
                 choiceDict = {9:1}
 
@@ -582,9 +583,6 @@ def decisionHard(board):
                 elif board[2] == 1 and board[8] == -1:
                     choiceDict = {1:1}
 
-                if choiceDict != False:
-                    board.update(choiceDict)
-                    return({1:board, 2:choiceDict})
             # C2 STRATEGY
             elif board[5] == 1:
                 if board[8] == -1:
@@ -594,17 +592,21 @@ def decisionHard(board):
 
             # C4 STRATEGY LAST
             elif board[9] == 1:
+                print('A')
                 if board[8] == -1:
+                    print('B')
                     if board[4] == -1 or board[6] == -1:
+                        print('C')
                         choiceDict = {5:1}
+
             elif board[1] == 1:
                 if board[4] == -1:
                     if board[8] == -1 or board[2] == -1:
                         choiceDict = {5:1}
 
-                if choiceDict != False:
-                    board.update(choiceDict)
-                    return({1:board, 2:choiceDict})
+            if choiceDict != False:
+                board.update(choiceDict)
+                return({1:board, 2:choiceDict})
 
         # D AND E AND F STRATEGIES
         if board[4] == 1:
