@@ -352,12 +352,12 @@ def decisionHard(board):
 
     # 1) TURN 1: A) If go first, randomly decide which aggressive two-turn setup guaranteed win strategy to initiate
     if occupiedSquares == 0:
-        strategy = random.randrange(0, 3, 1)
+        strategy = random.randrange(0, 4, 1)
         # A) Middle strategy
         if strategy == 1:
             choiceDict = {5:1}
         # B) Corner strategy
-        elif strategy == 2:
+        elif strategy == 2 or strategy == 3:
             choiceDict = {7:1}
         # C) Side strategy
         else:
@@ -421,24 +421,17 @@ def decisionHard(board):
 
         # B) 1. Corner strategy section one
         if board[7] == 1:
-            if board[5] == -1:
-                choiceDict = {3:1}
-            # B) 2. Corner strategy section two
-            elif board[5] == 0 and board[3] == -1:
-                choiceDict = {5:1}
-            # B) 3. Corner strategy section three
-            elif board[1] == -1 or board[2] == -1:
-                choiceDict = {6:1}
-            elif board[6] == -1 or board[9] == -1:
-                choiceDict = {2:1}
-            elif board[4] == -1:
+            if board[1] == -1:
+                choiceDict = {8:1}
+            elif board[4] == -1 or board[3] == -1 or board[6] == -1:
+                choiceDict = {9:1}
+            elif board[9] == -1 or board[8] == -1 or board[2] == -1:
                 choiceDict = {1:1}
             else:
-                choiceDict = {9:1}
+                choiceDict = {3:1}
 
-            if choiceDict != False:
-                board.update(choiceDict)
-                return({1:board, 2:choiceDict})
+            board.update(choiceDict)
+            return({1:board, 2:choiceDict})
 
         # C) 1. Side strategy section one
         if board[4] == 1:
@@ -569,9 +562,24 @@ def decisionHard(board):
                 board.update(choiceDict)
                 return({1:board, 2:choiceDict})
 
-        # C NEW CORNER STRATEGY
+        # C CORNER STRATEGY
         if board[7] == 1:
-            # C1 STRATEGY
+            if board[9] == 1:
+                if board[4] == -1 or board[6] == -1:
+                    choiceDict = {5:1}
+                elif board[3] == -1:
+                    choiceDict = {1:1}
+            elif board[1] == 1:
+                if board[9] == -1:
+                    choiceDict = {3:1}
+                elif board[8] == -1 or board[2] == -1:
+                    choiceDict = {5:1}
+
+            if choiceDict != False:
+                board.update(choiceDict)
+                return({1:board, 2:choiceDict})
+
+            # C MIDDLE STRATEGY
             if board[5] == -1:
                 if board[1] == -1:
                     choiceDict = {9:1}
@@ -589,25 +597,6 @@ def decisionHard(board):
                     choiceDict = {1:1}
                 elif board[4] == -1:
                     choiceDict = {9:1}
-
-            # C4 STRATEGY LAST
-            elif board[9] == 1:
-                if board[8] == -1:
-                    if board[4] == -1 or board[6] == -1:
-                        choiceDict = {5:1}
-
-            elif board[1] == 1:
-                if board[4] == -1:
-                    if board[8] == -1 or board[2] == -1:
-                        choiceDict = {5:1}
-
-            elif board[6] == 1:
-                if board[4] == -1:
-                    choiceDict = {9:1}
-
-            elif board[2] == 1:
-                if board[8] == -1:
-                    choiceDict = {1:1}
 
             if choiceDict != False:
                 board.update(choiceDict)
