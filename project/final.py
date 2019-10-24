@@ -83,10 +83,10 @@ def playGame():
             print(f'\n\n[[  T U R N  {turnCount}  ]]\n-------------------')
             if nextTurn == 1:
                 print('\nHmm analyzing', end=' ', flush=True)
-                time.sleep(.5)
+                time.sleep(.2)
                 for i in range(3):
                     print('. ', end=' ', flush=True)
-                    time.sleep(.5)
+                    time.sleep(.2)
                 nextTurn = compTurn(board, keepPlaying)
                 turnCount += 1
             elif nextTurn == 2:
@@ -281,7 +281,7 @@ def compTurn(board, mode):
     time.sleep(.5)
     if mode == 2:
         shitTalk()
-        time.sleep(1.5)
+        time.sleep(1)
     return(endGame(board, 1, mode))
 
 # Since computer will win no matter what, AI here is not important and just bare minimum to choose an unoccupied square.
@@ -592,11 +592,8 @@ def decisionHard(board):
 
             # C4 STRATEGY LAST
             elif board[9] == 1:
-                print('A')
                 if board[8] == -1:
-                    print('B')
                     if board[4] == -1 or board[6] == -1:
-                        print('C')
                         choiceDict = {5:1}
 
             elif board[1] == 1:
@@ -638,6 +635,9 @@ def decisionHard(board):
                         choiceDict = {5:1}
                     elif board[6] == -1:
                         choiceDict = {1:1}
+            elif board[6] == -1:
+                if board[7] == -1 or board[1] == -1:
+                    choiceDict = {9:1}
 
             if choiceDict != False:
                 board.update(choiceDict)
@@ -685,31 +685,31 @@ def hardInit():
         print(virusMsg, end = '', flush=True)
         time.sleep(.001)
     errorMsg = 'Fatal error '
-    for i in range(0, 40):
+    for i in range(0, 35):
         fullLine = ''
         if i < 10:
             print(errorMsg + str(random.randint(1, 10000)), flush=True)
             time.sleep(.05)
-        elif i >= 10 and i < 20:
+        elif i >= 10 and i < 15:
             for j in range(2):
                 fullLine += errorMsg + str(random.randint(1, 10000)) + '\t\t\t\t'
             print(fullLine, flush=True)
             time.sleep(.05)
-        elif i >= 20 and i < 30:
+        elif i >= 15 and i < 20:
             for j in range(2):
                 fullLine += errorMsg + str(random.randint(1, 10000)) + '\t'
                 if j == 1:
                     fullLine += '\t' + errorMsg + str(random.randint(1, 10000))
             print(fullLine, flush=True)
             time.sleep(.05)
-        elif i >= 30:
+        elif i >= 20:
             for j in range(8):
                 fullLine += errorMsg + str(random.randint(1, 10000)).ljust(25)
             print(fullLine, flush=True)
             time.sleep(.05)
         print(errorMsg + str(random.randint(1, 10000)).ljust(25), flush=True)
         time.sleep(.05)
-    for i in range(0, 5000):
+    for i in range(0, 2500):
         num = random.randint(0, 2)
         if num == 0:
             print('0', end = '', flush=True)
