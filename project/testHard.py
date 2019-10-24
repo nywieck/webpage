@@ -134,16 +134,19 @@ def decisionHardPlayer(board):
 
     # 1) TURN 1: A) If go first, randomly decide which aggressive two-turn setup guaranteed win strategy to initiate
     if occupiedSquares == 0:
-        strategy = random.randrange(0, 3, 1)
+        strategy = random.randrange(0, 12, 1)
         # A) Middle strategy
-        if strategy == 1:
+        if strategy == 9:
             choiceDict = {5:-1}
         # B) Corner strategy
-        elif strategy == 2:
+        elif strategy == 10:
             choiceDict = {7:-1}
         # C) Side strategy
-        else:
+        elif strategy == 11:
             choiceDict = {4:-1}
+        else:
+            choiceDict = {strategy:-1}
+
         board.update(choiceDict)
         return({1:board, 2:choiceDict})
 
