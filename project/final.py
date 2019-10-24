@@ -681,11 +681,11 @@ def hardInit():
         print(virusMsg, flush=True)
         time.sleep(.5)
         timer -= .2
-    for i in range(0, 1500):
+    for i in range(0, 1000):
         print(virusMsg, end = '', flush=True)
         time.sleep(.001)
     errorMsg = 'Fatal error '
-    for i in range(0, 50):
+    for i in range(0, 40):
         fullLine = ''
         if i < 10:
             print(errorMsg + str(random.randint(1, 10000)), flush=True)
@@ -709,7 +709,7 @@ def hardInit():
             time.sleep(.05)
         print(errorMsg + str(random.randint(1, 10000)).ljust(25), flush=True)
         time.sleep(.05)
-    for i in range(0, 15000):
+    for i in range(0, 5000):
         num = random.randint(0, 2)
         if num == 0:
             print('0', end = '', flush=True)
