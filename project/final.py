@@ -352,12 +352,12 @@ def decisionHard(board):
 
     # 1) TURN 1: A) If go first, randomly decide which aggressive two-turn setup guaranteed win strategy to initiate
     if occupiedSquares == 0:
-        strategy = random.randrange(0, 4, 1)
+        strategy = random.randrange(0, 3, 1)
         # A) Middle strategy
         if strategy == 1:
             choiceDict = {5:1}
         # B) Corner strategy
-        elif strategy == 2 or strategy == 3:
+        elif strategy == 2:
             choiceDict = {7:1}
         # C) Side strategy
         else:
@@ -419,7 +419,7 @@ def decisionHard(board):
             board.update(choiceDict)
             return({1:board, 2:choiceDict})
 
-        # B) 1. Corner strategy section one
+        # B) 1. Corner strategy
         if board[7] == 1:
             if board[1] == -1:
                 choiceDict = {8:1}
