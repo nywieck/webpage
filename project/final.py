@@ -349,16 +349,13 @@ def decisionHard(board):
 
     # 1) TURN 1: A) If go first, randomly decide which aggressive two-turn setup guaranteed win strategy to initiate
     if occupiedSquares == 0:
-        strategy = random.randrange(0, 3, 1)
+        strategy = random.randrange(0, 2, 1)
         # A) Middle strategy
         if strategy == 1:
             choiceDict = {5:1}
         # B) Corner strategy
-        elif strategy == 2:
-            choiceDict = {7:1}
-        # C) Side strategy
         else:
-            choiceDict = {4:1}
+            choiceDict = {7:1}
         board.update(choiceDict)
         return({1:board, 2:choiceDict})
 
@@ -439,11 +436,10 @@ def decisionHard(board):
             # C) 2. Side strategy section two
             elif board[3] == -1 or board[2] == -1:
                 choiceDict = {9:1}
-            # C) 3. Side strategy section three
-            elif board[9] == -1 or board[8] == -1:
+            elif board[8] == -1:
                 choiceDict = {2:1}
             # C) 4. Side strategy CHRISTIAN'S FACEMELT 
-            elif board[7] == -1:
+            elif board[7] == -1 or board[9] == -1:
                 choiceDict = {3:1}
             else:
                 choiceDict = {9:1}
@@ -613,18 +609,22 @@ def decisionHard(board):
                     elif board[7] == -1:
                         choiceDict = {5:1}
             elif board[2] == 1:
-                if board[6] == -1 or board[8] == -1:
+                if board[6] == -1:
                     choiceDict = {1:1}
+                elif board[8] == -1:
+                    choiceDict = {9:1}
             elif board[3] == 1:
-                if board[7] == -1:
+                if board[5] and board[8] == -1:
+                    choiceDict = {9:1}
+                elif board[7] == -1:
                     if board[1] == -1 or board[2] == -1 or board[5] == -1:
                         choiceDict = {6:1}
-                if board[9] == -1:
+                elif board[9] == -1:
                     if board[6] == -1:
                         choiceDict = {1:1}
                     elif board[2] == -1:
                         choiceDict = {5:1}
-                if board[8] == -1:
+                elif board[8] == -1:
                     if board[1] == -1:
                         choiceDict = {5:1}
                     elif board[6] == -1:
@@ -703,7 +703,7 @@ def hardInit():
             time.sleep(.05)
         print(errorMsg + str(random.randint(1, 10000)).ljust(25), flush=True)
         time.sleep(.05)
-    for i in range(0, 2500):
+    for i in range(0, 2000):
         num = random.randint(0, 2)
         if num == 0:
             print('0', end = '', flush=True)

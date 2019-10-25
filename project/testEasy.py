@@ -9,8 +9,8 @@ def playGame():
     gameCount = 0
     compWin = 0
     playerWin = 0
-    flag = -1
-    while flag == -1:
+    nextTurn = 1
+    while nextTurn != -2:
         print(f'\n------------------\n[[ GAME {gameCount} ]]\n------------------\n')
         nextTurn = random.randrange(1, 3, 1)
         board = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
@@ -32,12 +32,12 @@ def playGame():
             playerWin += 1
 
         if gameCount == 10000:
-            flag = 1
+            nextTurn = -2
             print('\nRESULTS')
-            print('Game play mode: EASY (Comp Player using easy mode AI which is beatable, and Comp using hard mode AI which is unbeatable)')
+            print('Game play mode: EASY (Computer Player using easy mode AI which is beatable, and Comp using hard mode AI which should be unbeatable)')
             print(f'Total Games: {gameCount}')
-            print(f'Comp Player wins: {playerWin}')
-            print(f'Comp Wins: {compWin}\n')
+            print(f'Computer Player wins: {playerWin}')
+            print(f'Computer Wins: {compWin}\n')
 
 # Draws the graphical version of the current board state for the player to see
 def drawBoard(board):
@@ -156,12 +156,13 @@ def decisionEasyPlayer(board):
                     board.update(choiceDict)
                     return({1:board, 2:choiceDict})
 
-    # 4) Last, choose square if all other above conditions not met
-    for i in range(1, 10):
-        if board[i] == 0:
-            choiceDict = {i:-1}
-            board.update(choiceDict)
-            return({1:board, 2:choiceDict})
+    # 4) Last, RANDOMLY choose square if all other above conditions not met
+    num = random.randrange(1, 10, 1)
+    while board[num] != 0:
+        num = random.randrange(1, 10, 1)
+    choiceDict = {num:-1}
+    board.update(choiceDict)
+    return({1:board, 2:choiceDict})
 
 def decisionHard(board):
     winConList = winConListFunct(board)
@@ -174,16 +175,13 @@ def decisionHard(board):
 
     # 1) TURN 1: A) If go first, randomly decide which aggressive two-turn setup guaranteed win strategy to initiate
     if occupiedSquares == 0:
-        strategy = random.randrange(0, 3, 1)
+        strategy = random.randrange(0, 2, 1)
         # A) Middle strategy
         if strategy == 1:
             choiceDict = {5:1}
         # B) Corner strategy
-        elif strategy == 2:
-            choiceDict = {7:1}
-        # C) Side strategy
         else:
-            choiceDict = {4:1}
+            choiceDict = {7:1}
         board.update(choiceDict)
         return({1:board, 2:choiceDict})
 
@@ -264,11 +262,10 @@ def decisionHard(board):
             # C) 2. Side strategy section two
             elif board[3] == -1 or board[2] == -1:
                 choiceDict = {9:1}
-            # C) 3. Side strategy section three
-            elif board[9] == -1 or board[8] == -1:
+            elif board[8] == -1:
                 choiceDict = {2:1}
             # C) 4. Side strategy CHRISTIAN'S FACEMELT 
-            elif board[7] == -1:
+            elif board[7] == -1 or board[9] == -1:
                 choiceDict = {3:1}
             else:
                 choiceDict = {9:1}
@@ -438,18 +435,22 @@ def decisionHard(board):
                     elif board[7] == -1:
                         choiceDict = {5:1}
             elif board[2] == 1:
-                if board[6] == -1 or board[8] == -1:
+                if board[6] == -1:
                     choiceDict = {1:1}
+                elif board[8] == -1:
+                    choiceDict = {9:1}
             elif board[3] == 1:
-                if board[7] == -1:
+                if board[5] and board[8] == -1:
+                    choiceDict = {9:1}
+                elif board[7] == -1:
                     if board[1] == -1 or board[2] == -1 or board[5] == -1:
                         choiceDict = {6:1}
-                if board[9] == -1:
+                elif board[9] == -1:
                     if board[6] == -1:
                         choiceDict = {1:1}
                     elif board[2] == -1:
                         choiceDict = {5:1}
-                if board[8] == -1:
+                elif board[8] == -1:
                     if board[1] == -1:
                         choiceDict = {5:1}
                     elif board[6] == -1:
