@@ -1,0 +1,21 @@
+0-387-95206-3	Misra	Pady	A Discipline of Multiprogramming 	2001	45.5
+1-85233-384-7	Tao	Lewis	Adaptive Control of Nonsmooth Dynamic Systems 	2001	65.0
+3-540-67713-5	Kloss	Ray	Advertising Worldwide 	2001	35.0
+0-387-94937-2	Campbell	Norman	An Introduction to Environmental Biophysics 	1998	31.5
+1-85233-219-0	Jaulin	Kieffer	Applied Interval Analysis 	2001	55.0
+3-540-65367-8	Vazirani	Gordy	Approximation Algorithms 	2001	24.5
+3-540-66334-7	Faber	Finn	Biotransformations in Organic Chemistry 	2000	23.0
+3-540-66574-9	Kapitaniak	Kelly	Chaos for Engineers 	2000	23.0
+3-540-65620-0	Berg	Clive	Computational Geometry 	2000	23.0
+3-540-42074-6	Ferziger	Peric	Computational Methods for Fluid Dynamics 	2002	35.0
+3-540-67481-0	Mueller	Paul	Computer Architecture 	2000	35.0
+3-540-42243-9	Vob	Daduna	Computer-Aided Scheduling of Public Transport 	2001	45.0
+3-540-41820-2	Leonhard	Leonis	Control of Electrical Drives 	2001	42.0
+3-540-41613-7	Omicini	Mirche	Coordination of Internet Agents 	2001	32.0
+3-540-41377-4	Muther	Morgan	Customer Relationship Management 	2002	28.0
+3-540-41247-6	Grellmann	Seidler	Deformation and Fracture Behaviour of Polymers 	2001	70.0
+3-540-41341-3	Meyer	Baese	Digital Signal Processing with Field Programmable Gate Arrays 	2001	52.5
+0-387-95065-6	Sarjoughian	Cellier	Discrete Event Modeling and Simulation Technologies 	2001	52.5
+3-540-41817-2	Gusev	Rempel	Disorder and Order in Strongly Nonstoichiometric Compounds 	2001	70.0
+0-387-95192-X	Coutinho	Kumari	Dynamic Simulations of Multibody Systems 	2001	52.5
+0-387-95144-X	Hummel	Craig	Electronic Properties of Materials 	2001	52.5
